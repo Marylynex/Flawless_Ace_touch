@@ -1,6 +1,6 @@
-# Recommendation Engine Rules — Flawless AceTouch v1.0
+# Recommendation Engine Rules — Flawless AceTouch v1.1 (expert-reviewed)
 
-Pipeline: SkinProfile → Priority scoring → Top 2–3 priorities → Routine + Products + Lifestyle tips. Deterministic v1 (no black-box); every output has a reason string.
+Pipeline: SkinProfile → Priority scoring → Top 2–3 priorities → Draft routine + products + tips → Expert approval → Final recommendation + expert endorsement note. Rules produce a DRAFT for expert review; nothing publishes without expert sign-off (mock expert in V1). Every output keeps a reason string.
 
 ## 1. Inputs (from Questionnaire Spec)
 Goals (Q1), effort tier (Q3), skin type (Q4), concerns (Q5–Q6), lifestyle (Q7), current routine (Q8), exclusions (Q9–Q11), preferences (Q10), climate (Q12), age band (Q13), photo signals (optional boost ±1).
@@ -43,3 +43,6 @@ Show only if: (a) sensitivity + fragrance-free need unmet by catalog, OR (b) 2+ 
 
 ## 8. Fallbacks
 No photo → proceed on answers. All products filtered out → relax premium/budget first, never safety filters; if still empty → barrier-repair default + "add more options soon" note.
+
+## 9. Expert review gate (V1.1)
+Draft status: rules output is `draft` linked to ConsultationRequest. Mock expert may: approve as-is, adjust priorities/products (logged in scores), or add expertNote endorsement (1–2 lines, shown on recommendation card). Validator re-runs conflict/healthy-filter rules after any expert edit; blocks publish on violation.

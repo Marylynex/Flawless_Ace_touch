@@ -26,6 +26,22 @@ Res 200:
 }
 ```
 
+## Experts & Consultation Requests (V1.1 — all MOCK)
+
+### GET /experts — mock directory
+Query: `?specialty=acne&language=en`
+Res 200: `{ "items": [{ "id": "uuid", "name": "Dr. …", "specialty": "acne", "language": ["en"], "rating": 4.8, "availability": "available" }] }` (mock)
+
+### POST /consultation-requests — submit (mock)
+Req: `{ "consultationId": "uuid", "specialty": "acne", "language": "en" }`
+Res 201: `{ "id": "uuid", "status": "submitted", "matchedExpertId": "uuid", "responseWindow": "24–48h" }` (mock match)
+
+### GET /consultation-requests/:id — status (mock)
+Res 200: `{ "id": "uuid", "status": "submitted | under_review | answered", "matchedExpertId": "uuid", "responseWindow": "24–48h" }` (mock)
+
+### GET /consultation-requests/:id/replies — expert reply (mock)
+Res 200: `{ "requestId": "uuid", "expertId": "uuid", "analysis": "…", "recommendationId": "uuid", "expertNote": "…" }` (mock)
+
 ## Recommendations & Products
 
 ### GET /recommendations/:id

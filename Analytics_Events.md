@@ -5,6 +5,9 @@ Conventions: PostHog. Every event includes `user_id, consultation_id?, timestamp
 | PRD Metric (§8) | Event | Trigger | Key properties |
 |---|---|---|---|
 | % complete consultation | `consultation_started` | POST /consultations | `source, goal_count` |
+| Match + request (PRD §8) | `expert_matched` | POST /consultation-requests | `expert_id, specialty, language, time_to_match_s` |
+| | `request_submitted` | POST /consultation-requests | `request_id, consultation_id, expert_id` |
+| | `request_answered` | mock reply ready | `request_id, expert_id, response_time_s, status` |
 | | `consultation_step_completed` | each wizard step | `step (1–6), time_on_step_s` |
 | | `consultation_completed` | POST …/complete | `duration_s, photo_attached (bool), priorities[]` |
 | | `consultation_abandoned` | exit mid-wizard | `last_step, time_spent_s` |
@@ -24,6 +27,7 @@ Conventions: PostHog. Every event includes `user_id, consultation_id?, timestamp
 
 ## Funnels (PostHog)
 1. Completion: started → step_completed(×6) → completed.
+2. Expert request (PRD §8): completed → expert_matched → request_submitted → request_answered (measure response_time_s = answered − submitted).
 2. Action: completed → product_clicked → product_saved → routine_saved.
 3. Formulation: completed → explored → saved → ordered.
 4. Retention: completed → scheduled → reminder → checkin_completed → second checkin.
@@ -31,3 +35,4 @@ Conventions: PostHog. Every event includes `user_id, consultation_id?, timestamp
 
 ## MVP targets (suggest, confirm pre-launch)
 - Completion ≥ 60%, clarity ≥ 4.2/5, save/act ≥ 35%, formulation explored ≥ 15% / ordered ≥ 3%, check-in return ≥ 30%, NPS ≥ 50.
+- V1.1 (PRD §8): match success ≥ 90%, median response_time_s within mock responseWindow.

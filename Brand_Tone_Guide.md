@@ -1,5 +1,5 @@
 # Flawless AceTouch — Brand & Tone Guide
-v1.0 | Sept 2026 | Companion to PRD v1.0 (Sec 7.2, Sec 4.1)
+v1.1 | Sept 2026 | Companion to PRD v1.1 (Sec 7.2, Sec 4.1 — mock-only async expert marketplace)
 
 ## 1. Voice in one line
 Supportive, expert, reassuring — like a knowledgeable beauty advisor who listens carefully and gives practical, confidence-building advice.
@@ -30,6 +30,7 @@ Supportive, expert, reassuring — like a knowledgeable beauty advisor who liste
 | "This is cosmetic guidance, not medical diagnosis — see a dermatologist if…" | Diagnose acne grade, rosacea, eczema, prescribe. |
 
 Language rules:
+- Voice rule (V1.1): every expert reply shows a named expert — name + credentials (+ photo where shown); never anonymous "our experts" for the review itself. Format: "Reviewed by [Name], [Credentials]".
 - Plain language; define terms on first use (e.g., "niacinamide — a form of vitamin B3 that supports tone and barrier").
 - No absolutes ("miracle", "erases", "perfect skin", "guaranteed results").
 - No fear/urgency ("last chance", "your skin is aging fast").
@@ -61,6 +62,14 @@ Language rules:
 ### 5.5 Custom formulation invite (only when valuable, no pressure)
 > Because off-the-shelf options with fragrance keep irritating you, a simple custom serum *could* help — same effective ingredients, nothing extra. Want to peek at a concept? Totally optional, and your routine already works without it.
 
+### 5.6 Match confirmation (V1.1)
+> You're matched, Maya! **Dr. Lena Ortiz, Board-Certified Dermatologist** (sensitive skin, Medical Spanish/English) will review your request.
+> Status: **submitted** — we'll notify you when it's **under review** and **answered**, typically within 24–48 hours. You can track progress anytime under My Requests.
+
+### 5.7 Expert reply header (V1.1 — required on every reply)
+> **Reviewed by Dr. Lena Ortiz, Board-Certified Dermatologist** · Answered Sept 12
+> Hi Maya, I reviewed your profile and photos — here's what I'd prioritize for you…
+
 ## 6. Microcopy patterns
 - Buttons: "See my plan", "Save routine", "Peek at custom option", "Check in (2 min)".
 - Empty states: "No saved formulas yet — your concepts will live here when you're ready."
@@ -71,5 +80,6 @@ Language rules:
 - [ ] Warm + specific, not generic?
 - [ ] ≤3 priorities / actions?
 - [ ] Why-it-fits + how-to-use included?
-- [ ] No medical / absolute / fear language?
+- [ ] Expert reply shows named expert (name + credentials)?
+- [ ] No medical / absolute / fear language? No diagnosis/prescription wording; async-only (no live-video promise)?
 - [ ] Clear next step?

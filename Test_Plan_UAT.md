@@ -1,18 +1,20 @@
 # Flawless AceTouch — Test Plan & UAT
-v1.0 | Sept 2026 | Maps to PRD v1.0 Sec 8 success metrics
+v1.1 | Sept 2026 | Maps to PRD v1.1 Sec 8 success metrics (mock-only, async-only; no diagnosis/prescription, no live video)
 
 ## 1. Metric → coverage map
 | PRD Sec 8 metric | Test cases |
 |---|---|
-| Complete a full consultation | TC-01–TC-04 |
-| Clarity & confidence after consultation | TC-05–TC-07 |
+| Complete a full intake + submit request | TC-01–TC-04, TC-21–TC-22 |
+| Match success rate and time-to-match | TC-21, TC-25 |
+| Expert response time (submitted → answered) | TC-22, TC-25 |
+| Clarity & confidence after consultation | TC-05–TC-07, TC-23 |
 | Save or act on recommendations | TC-08–TC-10 |
 | Explore / complete custom formulation | TC-11–TC-15 |
 | Return for progress check-ins | TC-16–TC-18 |
 | Satisfaction / likelihood to recommend | TC-19–TC-20 |
 | Edge cases | EC-01–EC-05 |
 
-## 2. UAT cases (25 total)
+## 2. UAT cases (30 total: TC-01–TC-25 + EC-01–EC-05; TC-01–TC-20 & EC unchanged)
 
 ### Consultation completion
 - **TC-01 Happy-path 6-step consult:** Steps: complete Welcome → Profile → Analysis → Recommendations → Formulation offer → Next steps in one session. Pass: reaches action plan; routine + next-step CTA shown.
@@ -46,6 +48,13 @@ v1.0 | Sept 2026 | Maps to PRD v1.0 Sec 8 success metrics
 - **TC-19 Satisfaction prompt:** Steps: rate clarity/confidence + likelihood to recommend after consult. Pass: 1–5 captured; low score offers "what was unclear?" follow-up.
 - **TC-20 Tone audit:** Steps: review all strings against Brand_Tone_Guide §7 checklist. Pass: no medical/absolute/fear language; disclaimer present.
 
+### Expert marketplace — matching, status, mock replies (V1.1, mock-only async)
+- **TC-21 Match success:** Steps: submit intakes for 3 concern profiles (acne, sensitivity, uneven tone); observe matched mock expert. Pass: match succeeds each time; specialty/language shown; selection rationale visible; no dead-end.
+- **TC-22 Status transitions:** Steps: submit request; advance mock clock through submitted → under review → answered. Pass: status badge + timeline update in order; answered state unlocks expert reply; no skipping/regression.
+- **TC-23 Expert reply render:** Steps: open answered request. Pass: header shows named expert (name, credentials, photo) + response date; body shows top 2–3 priorities in plain language + endorsed routine; tone per Brand_Tone_Guide.
+- **TC-24 Photo-skip with expert flow:** Steps: complete intake + match + submit with mock photo, then repeat skipping photo. Pass: both submit and get mock reply; no-photo path shows "add photos later for a more tailored review" note, never blocks.
+- **TC-25 Response-window display:** Steps: check match confirmation and status screens. Pass: expected window (e.g., "typically replies within 24–48 hours") shown at submit and during under-review; elapsed/window state consistent; no real-time-video or booking UI present.
+
 ### Edge cases
 - **EC-01 Sensitive/allergic user:** Steps: consult with allergy + past reaction; attempt formulation with that allergen. Pass: allergen blocked everywhere; gentle alternatives + pause/patch guidance shown.
 - **EC-02 Photo skip:** Steps: skip photo, give minimal answers. Pass: consult completes with safe generic-first advice + invitation to add detail later.
@@ -54,5 +63,5 @@ v1.0 | Sept 2026 | Maps to PRD v1.0 Sec 8 success metrics
 - **EC-05 Medical red flag:** Steps: enter persistent/worsening condition language. Pass: no diagnosis; shows "see a dermatologist" guidance + cosmetic-only disclaimer.
 
 ## 3. UAT exit criteria
-- 100% of TC-01–TC-20 + EC-01–EC-05 executed; ≥95% pass, no open P1 (safety/blocker) defects.
-- Spot-check PRD Sec 8 analytics events fire: completion, clarity score, save/act, formulation explore/order, check-in return, NPS.
+- 100% of TC-01–TC-25 + EC-01–EC-05 executed; ≥95% pass, no open P1 (safety/blocker) defects.
+- Spot-check PRD Sec 8 analytics events fire: intake completion, request submit, match success/time-to-match, submitted→answered response time, clarity score, save/act, formulation explore/order, check-in return, NPS.
