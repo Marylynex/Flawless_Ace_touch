@@ -1,0 +1,62 @@
+:root {
+  --primary: #2E7D6F;
+  --primary-dark: #1F5A4F;
+  --primary-soft: #E3F2EE;
+  --secondary: #7FB3A8;
+  --secondary-soft: #EEF6F3;
+  --accent: #EDC4B1;
+  --background: #FAFBFA;
+  --surface: #FFFFFF;
+  --text: #243834;
+  --text-muted: #6B7F7A;
+  --border: #DCE7E3;
+  --success: #3D9A50;
+  --success-soft: #E6F4EA;
+  --error: #C75B5B;
+  --radius: 12px;
+  --shadow: 0 2px 12px rgba(46, 125, 111, 0.08);
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--background); color: var(--text); line-height: 1.7; padding: 40px 20px 64px; }
+.wrap { max-width: 720px; margin: 0 auto; }
+.hero { background: var(--surface); border: 1px solid var(--border); border-top: 6px solid var(--primary); border-radius: 20px; box-shadow: var(--shadow); padding: 36px; margin-bottom: 24px; }
+.eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); background: var(--primary-soft); padding: 4px 12px; border-radius: 999px; margin-bottom: 12px; }
+h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 8px; }
+.subtitle { color: var(--text-muted); font-size: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 32px 36px; margin-bottom: 24px; }
+.card h2 { font-size: 22px; margin-bottom: 16px; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.field input[type="text"],
+.field select,
+.field textarea {
+  width: 100%; font-family: var(--font); font-size: 15px; color: var(--text);
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 12px 14px; outline: none; background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.field textarea { min-height: 100px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+.field .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+.field .err { font-size: 12px; color: var(--error); margin-top: 6px; }
+.preview { margin-top: 10px; }
+.preview img { max-width: 180px; border-radius: var(--radius); border: 1px solid var(--border); }
+.btn { font-family: var(--font); font-size: 15px; font-weight: 600; padding: 13px 28px; border-radius: 999px; border: 1px solid transparent; cursor: pointer; }
+.btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(46, 125, 111, 0.28); width: 100%; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:disabled { opacity: 0.6; cursor: wait; }
+.result { text-align: left; }
+.result .check { width: 56px; height: 56px; border-radius: 50%; background: var(--success-soft); color: var(--success); font-size: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.expert { background: var(--secondary-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin: 16px 0; }
+.expert strong { font-size: 17px; }
+.timeline { list-style: none; margin: 12px 0; font-size: 14px; }
+.timeline li { padding: 6px 0 6px 28px; position: relative; color: var(--text-muted); }
+.timeline li.done { color: var(--text); }
+.timeline li.done::before { content: "●"; position: absolute; left: 6px; color: var(--primary); }
+.timeline li.now::before { content: "◐"; position: absolute; left: 6px; color: var(--primary); }
+.timeline li.now { color: var(--text); font-weight: 600; }
+.timeline li.todo::before { content: "○"; position: absolute; left: 6px; color: var(--text-muted); }
+.disclaimer { font-size: 13px; color: var(--text-muted); background: var(--secondary-soft); border-radius: var(--radius); padding: 12px 16px; margin-top: 16px; }
+.ref { font-size: 13px; color: var(--text-muted); }
+.btn-link { background: none; border: none; color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 14px; font-family: var(--font); }

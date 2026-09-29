@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flawless AceTouch — Design System</title>
+<style>
+  :root {
+    --primary: #2E7D6F;
+    --primary-dark: #1F5A4F;
+    --primary-soft: #E3F2EE;
+    --secondary: #7FB3A8;
+    --secondary-soft: #EEF6F3;
+    --accent: #EDC4B1;
+    --accent-soft: #FDF2EB;
+    --info: #6A9BC3;
+    --info-soft: #EAF2F9;
+    --background: #FAFBFA;
+    --surface: #FFFFFF;
+    --text: #243834;
+    --text-muted: #6B7F7A;
+    --border: #DCE7E3;
+    --success: #3D9A50;
+    --success-soft: #E6F4EA;
+    --error: #C75B5B;
+    --error-soft: #F9EAEA;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(46, 125, 111, 0.08);
+    --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 48px 24px 80px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  header.hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 40px;
+    margin-bottom: 32px;
+    border-top: 6px solid var(--primary);
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--primary);
+    background: var(--primary-soft);
+    padding: 4px 12px; border-radius: 999px; margin-bottom: 12px;
+  }
+  h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .subtitle { color: var(--text-muted); font-size: 17px; max-width: 640px; }
+  section.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 32px 40px;
+    margin-bottom: 24px;
+  }
+  section.card h2 {
+    font-size: 22px; font-weight: 700; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  section.card h2 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
+  section.card > p.desc { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch .chip { height: 72px; }
+  .swatch .meta { padding: 10px 14px; }
+  .swatch .meta strong { display: block; font-size: 14px; }
+  .swatch .meta code { font-size: 12px; color: var(--text-muted); font-family: ui-monospace, "SF Mono", Consolas, monospace; }
+  .swatch .meta span.use { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .type-sample { border-bottom: 1px dashed var(--border); padding: 14px 0; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-sample .label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .t-h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+  .t-h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; }
+  .t-h3 { font-size: 20px; font-weight: 600; }
+  .t-body { font-size: 16px; color: var(--text); }
+  .t-small { font-size: 13px; color: var(--text-muted); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn {
+    font-family: var(--font);
+    font-size: 15px; font-weight: 600;
+    padding: 13px 28px; border-radius: 999px;
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform 0.08s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(46, 125, 111, 0.28); }
+  .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 6px 18px rgba(46, 125, 111, 0.34); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-secondary { background: var(--surface); color: var(--primary-dark); border-color: var(--primary); }
+  .btn-secondary:hover { background: var(--primary-soft); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+  .field { max-width: 560px; }
+  .field label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .field label .hint { display: block; font-weight: 400; font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .field textarea {
+    width: 100%; min-height: 110px; resize: vertical;
+    font-family: var(--font); font-size: 15px; color: var(--text);
+    background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 12px 14px; outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field textarea::placeholder { color: #9DB3AD; }
+  .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+  .field .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+  .demo-band {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;
+    background: var(--secondary-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px; align-items: center;
+  }
+  .badge { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+  .badge.success { background: var(--success-soft); color: var(--success); }
+  .badge.error { background: var(--error-soft); color: var(--error); }
+  .badge.info { background: var(--info-soft); color: var(--info); }
+  footer { text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 16px; }
+  @media (max-width: 600px) {
+    body { padding: 24px 12px 48px; }
+    header.hero, section.card { padding: 24px; }
+    h1, .t-h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Flawless AceTouch · V1.1</span>
+    <h1>Design System</h1>
+    <p class="subtitle">Visual language for the online skin care consultation platform — soft, trustworthy, and calm. Clean whites, gentle greens, and warm accents suitable for a medical / beauty product.</p>
+  </header>
+
+  <section class="card">
+    <h2><span class="dot"></span>Color Palette</h2>
+    <p class="desc">Primary greens carry trust and calm; soft tints are used for backgrounds and focus rings; the warm accent is reserved for highlights.</p>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#2E7D6F"></div><div class="meta"><strong>Primary</strong><code>#2E7D6F</code><span class="use">Buttons, headings, key actions</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#7FB3A8"></div><div class="meta"><strong>Secondary</strong><code>#7FB3A8</code><span class="use">Illustrations, secondary highlights</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#EDC4B1"></div><div class="meta"><strong>Accent</strong><code>#EDC4B1</code><span class="use">Warm highlights, badges, sparingly</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#FAFBFA;border-bottom:1px solid #DCE7E3"></div><div class="meta"><strong>Background</strong><code>#FAFBFA</code><span class="use">Page background</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#243834"></div><div class="meta"><strong>Text</strong><code>#243834</code><span class="use">Headings &amp; body copy</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#3D9A50"></div><div class="meta"><strong>Success</strong><code>#3D9A50</code><span class="use">Confirmations, healthy status</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#C75B5B"></div><div class="meta"><strong>Error</strong><code>#C75B5B</code><span class="use">Validation &amp; error states</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#E3F2EE"></div><div class="meta"><strong>Primary Soft</strong><code>#E3F2EE</code><span class="use">Focus rings, tinted backgrounds</span></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Typography</h2>
+    <p class="desc">Clean modern sans-serif stack (Inter, system fallback). Tight headings, relaxed body.</p>
+    <div class="type-sample"><div class="label">H1 · 36px Bold</div><div class="t-h1">Know your skin, love your routine</div></div>
+    <div class="type-sample"><div class="label">H2 · 28px Bold</div><div class="t-h2">Your expert has reviewed your case</div></div>
+    <div class="type-sample"><div class="label">H3 · 20px Semibold</div><div class="t-h3">This week's priorities</div></div>
+    <div class="type-sample"><div class="label">Body · 16px</div><div class="t-body">Based on your intake and photos, Dr. Amara recommends a gentle barrier-repair routine with fragrance-free products, morning and evening.</div></div>
+    <div class="type-sample"><div class="label">Small · 13px Muted</div><div class="t-small">General skincare guidance only — not a medical diagnosis. Mock data shown in this prototype.</div></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Buttons</h2>
+    <p class="desc">Rounded, high-contrast primary action; outlined secondary action.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button">Book Consultation</button>
+      <button class="btn btn-secondary" type="button">Browse Experts</button>
+      <button class="btn btn-primary" type="button" disabled>Book Consultation (disabled)</button>
+    </div>
+    <div class="demo-band">
+      <span class="badge success">Request answered</span>
+      <span class="badge info">Under review</span>
+      <span class="badge error">Photo needed</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Form Input</h2>
+    <p class="desc">Soft borders, calming green focus ring, gentle helper text.</p>
+    <div class="field">
+      <label for="concern">Describe your skin concern
+        <span class="hint">A few sentences is enough — your expert reads this first.</span>
+      </label>
+      <textarea id="concern" placeholder="e.g. Breakouts along my jawline that flare up before my period; skin feels tight after cleansing…"></textarea>
+      <div class="help">No real patient data in this prototype — mock text only.</div>
+    </div>
+  </section>
+
+  <footer>Flawless AceTouch · Design System v1.0 · Calm, trustworthy, expert-backed</footer>
+
+</div>
+</body>
+</html>

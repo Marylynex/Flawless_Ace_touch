@@ -148,7 +148,7 @@ The consultation ends with a clear action plan the user can start immediately, p
 
 **Overall experience goal:** The user should leave feeling “An expert finally reviewed my skin and I know exactly what to do next,” with a sense of confidence and clarity rather than information overload.
 
-**Tone throughout:** Supportive, expert, and reassuring — like a knowledgeable beauty advisor who listens carefully and gives practical, confidence-building advice.
+ **Tone throughout:** Supportive, expert, and reassuring — like a knowledgeable beauty advisor who listens carefully and gives practical, confidence-building advice.
 
 **4.2 Healthy Cosmetic Product Suggestions**
 
@@ -283,3 +283,26 @@ i) Continue receiving ongoing guidance as skin needs evolve
 
 * **V1.1 (Sept 2026):** Added expert marketplace model — expert matching, async consultation requests with status tracking, expert-reviewed analysis/recommendations, expert directory and follow-ups (all mock in V1). Added match/response-time metrics. Scoped V1 to async only; formal diagnosis/prescription and real-time video remain out of scope.
 * **V1.0 (Sept 2026):** Initial PRD — automated guided consultation, healthy product suggestions, custom formulation.
+# Agent Steering & Decision Notes
+
+## Task 1 – Implementation Plan & Tool Choice
+
+# Agent Steering & Decision Notes
+
+## Task 1 – Implementation Plan & Tool Choice
+
+**Tool choice I steered:**
+- AI originally suggested: React + Vite + Firebase (Firestore + Authentication) + Firebase Storage
+- My final decision: Next.js (App Router) + Prisma + SQLite + simple mock authentication
+- Why: I want everything to run completely offline/local for this prototype phase. Next.js gives me both the frontend and API routes in one project, and SQLite keeps the database as a local file so nothing needs to be online. This makes development and demo much simpler for the assessment.
+
+## Task 2 – Design Refinement
+
+**Design improvement requested:**
+- I asked the agent to increase the contrast of the primary button so it stands out more clearly and is more accessible, and to use a softer pastel green accent color that feels calmer and more trustworthy for a skin-care product.
+- This change is now visible in design.html
+## Agent Steering Notes – Task 2
+
+**Design refinement requested:**
+- I asked the agent to soften the accent color to a calmer pastel tone so it feels more soothing and trustworthy for a skin-care consultation platform.
+- This change is now reflected in design.html

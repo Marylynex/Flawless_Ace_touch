@@ -1,0 +1,11 @@
+# Dependencies
+app/node_modules/
+
+# Build / cache
+app/.vite/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

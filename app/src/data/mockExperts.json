@@ -1,0 +1,5 @@
+[
+  { "id": "exp-01", "name": "Dr. Amara Osei", "credentials": "Dermatologist, MD", "specialties": ["acne", "sensitivity"], "language": "English", "rating": 4.9, "responseWindow": "within 24 hours" },
+  { "id": "exp-02", "name": "Dr. Lena Fischer", "credentials": "Dermatologist, MD", "specialties": ["pigmentation", "uneven-tone"], "language": "English", "rating": 4.8, "responseWindow": "within 48 hours" },
+  { "id": "exp-03", "name": "Sophie Marchand", "credentials": "Licensed Esthetician", "specialties": ["dryness", "early-aging"], "language": "English", "rating": 4.9, "responseWindow": "within 24 hours" }
+]
