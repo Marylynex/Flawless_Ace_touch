@@ -44,6 +44,54 @@ export interface EmailStatus {
   message: string;
 }
 
+const API = 'http://localhost:3001';
+
+export async function askAi(question: string): Promise<string> {
+  const res = await fetch(`${API}/api/ask-ai`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question }),
+  });
+  const data = (await res.json().catch(() => ({}))) as { answer?: string; error?: string };
+  if (!res.ok) {
+    if (data.error === 'ai-not-configured') {
+      throw new Error('AI research is not configured yet — add GROQ_API_KEY to app/.env.local and restart the email server.');
+    }
+    throw new Error('The research assistant is unavailable right now. Try again later.');
+  }
+  return data.answer || 'No answer returned.';
+}
+
+export interface PaymentInit {
+  mock: boolean;
+  authorization_url: string;
+  reference: string;
+  amountNgn?: number;
+  note?: string;
+}
+
+export async function initPayment(email: string, amountNgn: number): Promise<PaymentInit> {
+  const res = await fetch(`${API}/api/payments/initialize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, amountNgn }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error('Could not start the payment. Check the email server is running.');
+  return data as PaymentInit;
+}
+
+export async function verifyPayment(reference: string): Promise<{ paid: boolean; mock: boolean }> {
+  const res = await fetch(`${API}/api/payments/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reference }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error('Could not verify the payment.');
+  return data as { paid: boolean; mock: boolean };
+}
+
 // Calls the local email side-server (needs `npm run email-server`).
 // Never fails the consultation if email is unavailable — reports status instead.
 export async function sendConfirmation(req: {

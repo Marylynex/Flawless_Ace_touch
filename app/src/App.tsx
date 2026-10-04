@@ -1,5 +1,10 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { submitRequest, sendConfirmation, type EmailStatus, type MatchResult } from './services/mockApi';
+import mockExperts from './data/mockExperts.json';
+import skinTips from './data/skinTips.json';
+import LearnLibrary from './components/LearnLibrary';
+import ResearchChat from './components/ResearchChat';
+import PaymentCard from './components/PaymentCard';
 
 const CONCERNS = [
   { value: 'acne', label: 'Acne / breakouts' },
@@ -11,6 +16,12 @@ const CONCERNS = [
 ];
 
 const TIMES = ['Weekday morning', 'Weekday afternoon', 'Weekday evening', 'Weekend morning', 'Weekend afternoon'];
+
+const STEPS = [
+  { n: '1', title: 'Tell us about your skin', body: 'Goals, concerns, routine and an optional photo. Two minutes, guided.' },
+  { n: '2', title: 'Meet your matched expert', body: 'We pair you with a vetted dermatologist or skin expert for your concern.' },
+  { n: '3', title: 'Get your routine', body: 'A clear AM/PM plan with healthy product picks, reviewed by your expert.' },
+];
 
 export default function App() {
   const [name, setName] = useState('');
@@ -25,6 +36,8 @@ export default function App() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<MatchResult | null>(null);
   const [emailStatus, setEmailStatus] = useState<EmailStatus | null>(null);
+
+  const tip = skinTips.find((t) => t.concern === concern) ?? skinTips[0];
 
   function onPhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -92,98 +105,164 @@ export default function App() {
     setFileKey((k) => k + 1); // clear the file input element
   }
 
+  const firstName = name.split(' ')[0] || 'there';
+
   return (
     <div className="wrap">
       <header className="hero">
-        <span className="eyebrow">Flawless AceTouch · Prototype</span>
-        <h1>Request a skin consultation</h1>
+        <span className="eyebrow">Flawless AceTouch - Prototype</span>
+        <h1>Know your skin. Love your routine.</h1>
         <p className="subtitle">
-          Tell us about your skin and we will match you with a skin expert.
-          Mock data only — nothing leaves your browser.
+          Tell us about your skin and a vetted expert reviews your case and builds
+          your routine. Mock data only - nothing leaves your browser.
         </p>
+        <div className="stats">
+          <div><strong>12</strong><span>vetted experts (mock)</span></div>
+          <div><strong>24h</strong><span>typical response</span></div>
+          <div><strong>4.9</strong><span>average rating</span></div>
+        </div>
       </header>
 
       {!result ? (
-        <section className="card">
-          <h2>Request Skin Consultation</h2>
-          <form onSubmit={onSubmit}>
-            <div className="field">
-              <label htmlFor="name">Name</label>
-              <input
-                id="name" type="text" placeholder="e.g. Jane Doe"
-                value={name} onChange={(e) => setName(e.target.value)}
-              />
+        <>
+          <section className="card">
+            <h2>How it works</h2>
+            <div className="steps">
+              {STEPS.map((s) => (
+                <div className="step" key={s.n}>
+                  <div className="step-n">{s.n}</div>
+                  <strong>{s.title}</strong>
+                  <p>{s.body}</p>
+                </div>
+              ))}
             </div>
-            <div className="field">
-              <label htmlFor="email">Email</label>
-              <input
-                id="email" type="text" placeholder="e.g. jane@example.com"
-                value={email} onChange={(e) => setEmail(e.target.value)}
-              />
-              <div className="help">Used only for the confirmation email (mock prototype).</div>
+          </section>
+
+          <section className="card">
+            <h2>Meet some of our experts</h2>
+            <p className="muted">Mock profiles for this prototype.</p>
+            <div className="experts">
+              {(mockExperts as { id: string; name: string; credentials: string; rating: number }[]).map((ex) => (
+                <div className="expert-card" key={ex.id}>
+                  <div className="avatar">{ex.name.charAt(0)}</div>
+                  <strong>{ex.name}</strong>
+                  <span className="muted">{ex.credentials}</span>
+                  <span className="rating">* {ex.rating}</span>
+                </div>
+              ))}
             </div>
-            <div className="field">
-              <label htmlFor="concern">Skin concern</label>
-              <select id="concern" value={concern} onChange={(e) => setConcern(e.target.value)}>
-                {CONCERNS.map((c) => (
-                  <option key={c.value} value={c.value}>{c.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="details">Describe your skin concern</label>
-              <textarea
-                id="details" placeholder="e.g. Breakouts along my jawline; skin feels tight after cleansing…"
-                value={details} onChange={(e) => setDetails(e.target.value)}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="photo">Photo upload (optional, mock only)</label>
-              <input id="photo" key={fileKey} type="file" accept="image/*" onChange={onPhoto} />
-              <div className="help">Preview stays on this page — no upload, no storage.</div>
-              {photoUrl && (
-                <div className="preview"><img src={photoUrl} alt="Mock upload preview" /></div>
-              )}
-            </div>
-            <div className="field">
-              <label htmlFor="time">Preferred consultation time</label>
-              <select id="time" value={preferredTime} onChange={(e) => setPreferredTime(e.target.value)}>
-                {TIMES.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-            {error && <div className="field"><div className="err">{error}</div></div>}
-            <button className="btn btn-primary" type="submit" disabled={submitting}>
-              {submitting ? 'Matching you with an expert…' : 'Book Consultation'}
-            </button>
-          </form>
-        </section>
+          </section>
+
+          <section className="card">
+            <h2>Request Skin Consultation</h2>
+            <form onSubmit={onSubmit}>
+              <div className="field">
+                <label htmlFor="name">Name</label>
+                <input
+                  id="name" type="text" placeholder="e.g. Jane Doe"
+                  value={name} onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email" type="text" placeholder="e.g. jane@example.com"
+                  value={email} onChange={(e) => setEmail(e.target.value)}
+                />
+                <div className="help">Used only for the confirmation email (mock prototype).</div>
+              </div>
+              <div className="field">
+                <label>What bothers you most?</label>
+                <div className="pills">
+                  {CONCERNS.map((c) => (
+                    <button
+                      key={c.value}
+                      type="button"
+                      className={concern === c.value ? 'pill active' : 'pill'}
+                      onClick={() => setConcern(c.value)}
+                    >
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="tip">
+                <strong>Skin school: {tip.title}</strong>
+                <p>{tip.body}</p>
+                <span>{tip.ingredient}</span>
+              </div>
+              <div className="field">
+                <label htmlFor="details">Describe your skin concern</label>
+                <textarea
+                  id="details" placeholder="e.g. Breakouts along my jawline; skin feels tight after cleansing..."
+                  value={details} onChange={(e) => setDetails(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="photo">Photo upload (optional, mock only)</label>
+                <input id="photo" key={fileKey} type="file" accept="image/*" onChange={onPhoto} />
+                <div className="help">Preview stays on this page - no upload, no storage.</div>
+                {photoUrl && (
+                  <div className="preview"><img src={photoUrl} alt="Mock upload preview" /></div>
+                )}
+              </div>
+              <div className="field">
+                <label htmlFor="time">Preferred consultation time</label>
+                <select id="time" value={preferredTime} onChange={(e) => setPreferredTime(e.target.value)}>
+                  {TIMES.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              {error && <div className="field"><div className="err">{error}</div></div>}
+              <button className="btn btn-primary" type="submit" disabled={submitting}>
+                {submitting ? 'Matching you with an expert...' : 'Book Consultation'}
+              </button>
+            </form>
+          </section>
+        </>
       ) : (
         <section className="card result">
-          <div className="check">✓</div>
-          <h2>You're matched, {name.split(' ')[0] || 'there'}!</h2>
-          <p className="ref">Reference: {result.referenceId} · Preferred time: {preferredTime}</p>
+          <div className="check">OK</div>
+          <h2>You are matched, {firstName}!</h2>
+          <p className="ref">Reference: {result.referenceId} - Preferred time: {preferredTime}</p>
           <div className="expert">
-            <strong>{result.expert.name}</strong>
-            <div>{result.expert.credentials} · ★ {result.expert.rating} · {result.expert.language}</div>
-            <div>Responds {result.expert.responseWindow} (mock).</div>
+            <div className="avatar lg">{result.expert.name.charAt(0)}</div>
+            <div>
+              <strong>{result.expert.name}</strong>
+              <div>{result.expert.credentials} - Rating {result.expert.rating} - {result.expert.language}</div>
+              <div>Responds {result.expert.responseWindow} (mock).</div>
+            </div>
           </div>
           <ul className="timeline">
-            <li className="done">Submitted — we received your request</li>
-            <li className="now">Under review — {result.expert.name.split(' ')[0]} is reviewing your case</li>
-            <li className="todo">Answered — expect your routine {result.expert.responseWindow}</li>
+            <li className="done">Submitted - we received your request</li>
+            <li className="now">Under review - {result.expert.name.split(' ')[0]} is reviewing your case</li>
+            <li className="todo">Answered - expect your routine {result.expert.responseWindow}</li>
           </ul>
+          <div className="tip">
+            <strong>While you wait - {tip.title}</strong>
+            <p>{tip.body}</p>
+            <span>{tip.ingredient}</span>
+          </div>
           <div className="disclaimer" style={emailStatus?.sent ? { background: 'var(--success-soft)' } : undefined}>
             {emailStatus ? ((emailStatus.sent ? 'Sent: ' : '') + emailStatus.message) : 'Sending confirmation...'}
           </div>
-          <div className="disclaimer">
-            General skincare guidance only — not a medical diagnosis. All experts and replies in this
-            prototype are mock data.
-          </div>
-          <button className="btn-link" type="button" onClick={reset}>← Submit another request</button>
+          <PaymentCard email={email} referenceId={result.referenceId} />
+          <button className="btn-link" type="button" onClick={reset}>Submit another request</button>
         </section>
       )}
+
+      {!result && (
+        <>
+          <LearnLibrary />
+          <ResearchChat />
+        </>
+      )}
+
+      <footer className="footer">
+        General skincare guidance only - not a medical diagnosis. All experts, tips and replies
+        in this prototype are mock data.
+      </footer>
     </div>
   );
 }

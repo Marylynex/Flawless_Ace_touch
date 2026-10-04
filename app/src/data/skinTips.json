@@ -1,0 +1,38 @@
+[
+  {
+    "concern": "acne",
+    "title": "Why breakouts love the jawline",
+    "body": "Hormonal shifts can overstimulate oil glands along the jaw and chin. A gentle salicylic-acid cleanser plus a light, non-comedogenic moisturizer is the classic first line — your expert will confirm what fits your skin.",
+    "ingredient": "Look for: salicylic acid, niacinamide"
+  },
+  {
+    "concern": "dryness",
+    "title": "Dryness is often a barrier problem",
+    "body": "Tightness after cleansing usually means the moisture barrier is stripped. Cream cleansers, ceramides and hyaluronic acid on damp skin help rebuild it within days.",
+    "ingredient": "Look for: ceramides, hyaluronic acid, squalane"
+  },
+  {
+    "concern": "pigmentation",
+    "title": "Dark spots fade — slowly",
+    "body": "Post-inflammatory marks can take 6-12 weeks to fade. Daily sunscreen is non-negotiable: without it, brightening actives like vitamin C and azelaic acid cannot win.",
+    "ingredient": "Look for: vitamin C, azelaic acid, SPF 30+"
+  },
+  {
+    "concern": "sensitivity",
+    "title": "Less is more for reactive skin",
+    "body": "Redness-prone skin does best with fragrance-free formulas and one active at a time. Patch-test anything new behind the ear for 48 hours.",
+    "ingredient": "Look for: fragrance-free, centella, oat extract"
+  },
+  {
+    "concern": "uneven-tone",
+    "title": "Tone evens with consistency",
+    "body": "Uneven tone responds to steady exfoliation (1-2x weekly) plus niacinamide. Results build over a month — your check-in tracks the change.",
+    "ingredient": "Look for: niacinamide, lactic acid, SPF 30+"
+  },
+  {
+    "concern": "early-aging",
+    "title": "Prevention beats correction",
+    "body": "Fine lines soften fastest with sunscreen, retinoids introduced slowly, and peptides for firmness. Your expert will stage these so your skin never feels overwhelmed.",
+    "ingredient": "Look for: retinoids (PM), peptides, SPF 30+"
+  }
+]

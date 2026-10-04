@@ -1,0 +1,74 @@
+[
+  {
+    "id": "formulation-basics",
+    "title": "Formulation basics: what is actually in your cream",
+    "minutes": 4,
+    "level": "Beginner",
+    "tags": ["formulation", "basics"],
+    "paragraphs": [
+      "Most moisturizers are emulsions: water-loving and oil-loving ingredients blended so they do not separate. The water phase hydrates, the oil phase seals moisture in, and emulsifiers hold the two together.",
+      "A complete formula also needs a preservative (to stop bacteria and mold), a pH adjuster (skin likes roughly pH 5.5), and functional extras like humectants or antioxidants.",
+      "Rule of thumb when comparing products: the first five ingredients on the label usually make up about 80 percent of what is in the jar."
+    ]
+  },
+  {
+    "id": "inci-labels",
+    "title": "How to read an INCI ingredient label",
+    "minutes": 3,
+    "level": "Beginner",
+    "tags": ["labels", "shopping"],
+    "paragraphs": [
+      "Ingredients are listed in descending order of concentration down to 1 percent; below that they can appear in any order. If an active you want sits near the very end, there may not be enough of it to matter.",
+      "Watch for fragrance (parfum) and drying alcohols high on the list if your skin is sensitive. Fragrance-free matters more than the word natural.",
+      "Sunscreen filters, acids and retinoids should appear in the upper half of the list to be doing real work."
+    ]
+  },
+  {
+    "id": "moisture-barrier",
+    "title": "The moisture barrier, explained simply",
+    "minutes": 4,
+    "level": "Beginner",
+    "tags": ["barrier", "dryness", "sensitivity"],
+    "paragraphs": [
+      "The barrier is the outermost skin layer: dead cells (bricks) held by lipids (mortar) made of ceramides, cholesterol and fatty acids. When the mortar cracks, water escapes and irritants get in.",
+      "Signs of damage: stinging, tightness after cleansing, sudden sensitivity to products you used to tolerate.",
+      "Repair it with a gentle cleanser, a ceramide moisturizer, and a pause on strong acids and retinoids for one to two weeks."
+    ]
+  },
+  {
+    "id": "sunscreen-101",
+    "title": "Sunscreen 101: mineral vs chemical",
+    "minutes": 3,
+    "level": "Beginner",
+    "tags": ["sunscreen", "pigmentation", "aging"],
+    "paragraphs": [
+      "Mineral filters (zinc oxide, titanium dioxide) sit on the skin and scatter UV; chemical filters absorb UV and convert it to heat. Both work when used in adequate amounts.",
+      "Use the two-finger rule for your face and neck, SPF 30 or higher, and reapply every two hours outdoors. Sunscreen is the single most effective anti-aging product.",
+      "No brightening routine for dark spots can succeed without daily sunscreen — UV will keep recreating the pigment."
+    ]
+  },
+  {
+    "id": "patch-testing",
+    "title": "Patch testing: the 48-hour habit that prevents disasters",
+    "minutes": 2,
+    "level": "Beginner",
+    "tags": ["safety", "sensitivity"],
+    "paragraphs": [
+      "Apply a small amount of any new product behind the ear or on the inner forearm, once daily for two days, before using it on your face.",
+      "If you see redness, itching or tiny bumps, that product is not for you — no matter how popular it is.",
+      "Introduce only one new product at a time so you always know the culprit when something reacts."
+    ]
+  },
+  {
+    "id": "preservatives",
+    "title": "Preservatives: why your cream needs them",
+    "minutes": 4,
+    "level": "Intermediate",
+    "tags": ["formulation", "safety"],
+    "paragraphs": [
+      "Any product containing water can grow bacteria and mold once opened. Preservatives such as phenoxyethanol or organic acids keep it safe for months.",
+      "Preservative-free claims usually mean the product is anhydrous (oil-only), single-use, or kept refrigerated with a short shelf life — not that it is safer.",
+      "Homemade water-based cosmetics without tested preservation are a common cause of skin infections. Leave preservation to professionals."
+    ]
+  }
+]
