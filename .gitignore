@@ -9,3 +9,7 @@ app/.vite/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Secrets — never commit
+.env.local
+.env*.local

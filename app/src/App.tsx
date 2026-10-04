@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { submitRequest, type MatchResult } from './services/mockApi';
+import { submitRequest, sendConfirmation, type EmailStatus, type MatchResult } from './services/mockApi';
 
 const CONCERNS = [
   { value: 'acne', label: 'Acne / breakouts' },
@@ -14,6 +14,7 @@ const TIMES = ['Weekday morning', 'Weekday afternoon', 'Weekday evening', 'Weeke
 
 export default function App() {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [concern, setConcern] = useState('acne');
   const [details, setDetails] = useState('');
   const [photoName, setPhotoName] = useState<string | null>(null);
@@ -23,6 +24,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<MatchResult | null>(null);
+  const [emailStatus, setEmailStatus] = useState<EmailStatus | null>(null);
 
   function onPhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -47,17 +49,31 @@ export default function App() {
       setError('Please add your name and a short description of your concern.');
       return;
     }
+    if (!/.+@.+\..+/.test(email.trim())) {
+      setError('Please add a valid email address for the confirmation.');
+      return;
+    }
     setError('');
     setSubmitting(true);
     try {
       const res = await submitRequest({
         name: name.trim(),
+        email: email.trim(),
         concern,
         details: details.trim(),
         photoName,
         preferredTime,
       });
       setResult(res);
+      setEmailStatus(
+        await sendConfirmation({
+          to: email.trim(),
+          name: name.trim(),
+          concern,
+          referenceId: res.referenceId,
+          expertName: res.expert.name,
+        }),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -65,7 +81,9 @@ export default function App() {
 
   function reset() {
     setResult(null);
+    setEmailStatus(null);
     setName('');
+    setEmail('');
     setDetails('');
     setPhotoName(null);
     if (photoUrl) URL.revokeObjectURL(photoUrl);
@@ -95,6 +113,14 @@ export default function App() {
                 id="name" type="text" placeholder="e.g. Jane Doe"
                 value={name} onChange={(e) => setName(e.target.value)}
               />
+            </div>
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email" type="text" placeholder="e.g. jane@example.com"
+                value={email} onChange={(e) => setEmail(e.target.value)}
+              />
+              <div className="help">Used only for the confirmation email (mock prototype).</div>
             </div>
             <div className="field">
               <label htmlFor="concern">Skin concern</label>
@@ -148,6 +174,9 @@ export default function App() {
             <li className="now">Under review — {result.expert.name.split(' ')[0]} is reviewing your case</li>
             <li className="todo">Answered — expect your routine {result.expert.responseWindow}</li>
           </ul>
+          <div className="disclaimer" style={emailStatus?.sent ? { background: 'var(--success-soft)' } : undefined}>
+            {emailStatus ? ((emailStatus.sent ? 'Sent: ' : '') + emailStatus.message) : 'Sending confirmation...'}
+          </div>
           <div className="disclaimer">
             General skincare guidance only — not a medical diagnosis. All experts and replies in this
             prototype are mock data.
