@@ -46,7 +46,7 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const MOCK_FEE_NGN = 5000;
 
