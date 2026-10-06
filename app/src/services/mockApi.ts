@@ -44,7 +44,7 @@ export interface EmailStatus {
   message: string;
 }
 
-const API = 'http://localhost:3001';
+const API = '';
 
 export async function askAi(question: string): Promise<string> {
   const res = await fetch(`${API}/api/ask-ai`, {
@@ -102,7 +102,7 @@ export async function sendConfirmation(req: {
   expertName: string;
 }): Promise<EmailStatus> {
   try {
-    const res = await fetch('http://localhost:3001/api/send-email', {
+    const res = await fetch(`${API}/api/send-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req),

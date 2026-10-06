@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { submitRequest, sendConfirmation, type EmailStatus, type MatchResult } from './services/mockApi';
 import mockExperts from './data/mockExperts.json';
@@ -5,6 +7,10 @@ import skinTips from './data/skinTips.json';
 import LearnLibrary from './components/LearnLibrary';
 import ResearchChat from './components/ResearchChat';
 import PaymentCard from './components/PaymentCard';
+import Login from './components/Login';
+import AdminDashboard from './components/AdminDashboard';
+import { getSession, logout, type User } from './services/auth';
+import { recordRequest, markPaid } from './services/store';
 
 const CONCERNS = [
   { value: 'acne', label: 'Acne / breakouts' },
@@ -24,6 +30,7 @@ const STEPS = [
 ];
 
 export default function App() {
+  const [user, setUser] = useState<User | null>(() => getSession());
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [concern, setConcern] = useState('acne');
@@ -78,6 +85,14 @@ export default function App() {
         preferredTime,
       });
       setResult(res);
+      recordRequest({
+        referenceId: res.referenceId,
+        name: name.trim(),
+        email: email.trim(),
+        concern,
+        preferredTime,
+        expertName: res.expert.name,
+      });
       setEmailStatus(
         await sendConfirmation({
           to: email.trim(),
@@ -107,8 +122,40 @@ export default function App() {
 
   const firstName = name.split(' ')[0] || 'there';
 
+  function handleLogout() {
+    logout();
+    setUser(null);
+    reset();
+  }
+
+  if (!user) {
+    return (
+      <div className="wrap">
+        <Login onLogin={setUser} />
+        <footer className="footer">
+          General skincare guidance only - not a medical diagnosis. Mock data only.
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <div className="wrap">
+      <div className="userbar">
+        <span>Logged in as <strong>{user.name}</strong> ({user.role})</span>
+        <button className="btn-link" type="button" onClick={handleLogout}>Log out</button>
+      </div>
+      {user.role === 'admin' ? (
+        <>
+          <header className="hero">
+            <span className="eyebrow">Flawless AceTouch - Admin</span>
+            <h1>Platform overview</h1>
+            <p className="subtitle">Requests, experts, payments and learn content. Mock data only.</p>
+          </header>
+          <AdminDashboard />
+        </>
+      ) : (
+      <>
       <header className="hero">
         <span className="eyebrow">Flawless AceTouch - Prototype</span>
         <h1>Know your skin. Love your routine.</h1>
@@ -247,7 +294,7 @@ export default function App() {
           <div className="disclaimer" style={emailStatus?.sent ? { background: 'var(--success-soft)' } : undefined}>
             {emailStatus ? ((emailStatus.sent ? 'Sent: ' : '') + emailStatus.message) : 'Sending confirmation...'}
           </div>
-          <PaymentCard email={email} referenceId={result.referenceId} />
+          <PaymentCard email={email} referenceId={result.referenceId} onPaid={(ref, payRef) => markPaid(ref, payRef)} />
           <button className="btn-link" type="button" onClick={reset}>Submit another request</button>
         </section>
       )}
@@ -263,6 +310,8 @@ export default function App() {
         General skincare guidance only - not a medical diagnosis. All experts, tips and replies
         in this prototype are mock data.
       </footer>
+      </>
+      )}
     </div>
   );
 }

@@ -1,0 +1,13 @@
+# Netlify deploy config for Flawless AceTouch (Next.js in app/)
+[build]
+  base = "app"
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# API routes run as Netlify Functions via the Next.js plugin.
+# Required env vars (set in Netlify dashboard > Site settings > Environment variables):
+#   RESEND_API_KEY, GROQ_API_KEY
+# Optional: GROQ_MODEL, PAYSTACK_SECRET_KEY

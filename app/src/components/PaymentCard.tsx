@@ -1,9 +1,11 @@
+'use client';
+
 import { useState } from 'react';
 import { initPayment, verifyPayment } from '../services/mockApi';
 
 const FEE_NGN = 5000;
 
-export default function PaymentCard({ email, referenceId }: { email: string; referenceId: string }) {
+export default function PaymentCard({ email, referenceId, onPaid }: { email: string; referenceId: string; onPaid?: (referenceId: string, payRef: string) => void }) {
   const [state, setState] = useState<'idle' | 'ready' | 'verifying' | 'paid' | 'error'>('idle');
   const [payRef, setPayRef] = useState('');
   const [note, setNote] = useState('');
@@ -30,7 +32,12 @@ export default function PaymentCard({ email, referenceId }: { email: string; ref
     setState('verifying');
     try {
       const v = await verifyPayment(payRef);
-      setState(v.paid ? 'paid' : 'error');
+      if (v.paid) {
+        if (onPaid) onPaid(referenceId, payRef);
+        setState('paid');
+      } else {
+        setState('error');
+      }
     } catch {
       setState('error');
     }
