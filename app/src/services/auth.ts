@@ -43,8 +43,11 @@ export function register(name: string, email: string, password: string): User {
   const customers = readCustomers();
   customers.push({ email: cleanEmail, name: cleanName, password });
   localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(customers));
-  localStorage.setItem(KEY, JSON.stringify(user));
   return user;
+}
+
+export function startSession(user: User): void {
+  localStorage.setItem(KEY, JSON.stringify(user));
 }
 
 export function login(email: string, password: string): User {

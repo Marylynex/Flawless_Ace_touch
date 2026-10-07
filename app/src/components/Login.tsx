@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { login, register, type User } from '../services/auth';
+import { login, register, startSession, type User } from '../services/auth';
 
 export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
   const [mode, setMode] = useState<'login' | 'signup'>('signup');
@@ -9,11 +9,16 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [created, setCreated] = useState<User | null>(null);
 
   function submit(e: FormEvent) {
     e.preventDefault();
     try {
-      onLogin(mode === 'signup' ? register(name, email, password) : login(email, password));
+      if (mode === 'signup') {
+        setCreated(register(name, email, password));
+      } else {
+        onLogin(login(email, password));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
     }
@@ -29,6 +34,34 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
   function switchMode(m: 'login' | 'signup') {
     setMode(m);
     setError('');
+    setCreated(null);
+  }
+
+  if (created) {
+    return (
+      <div className="wrap">
+        <header className="hero">
+          <span className="eyebrow">Flawless AceTouch - Prototype</span>
+          <h1>Account created</h1>
+          <p className="subtitle">Welcome, {created.name}! Your customer account is ready.</p>
+        </header>
+        <section className="card result">
+          <div className="check">OK</div>
+          <h2>Signup successful</h2>
+          <p className="ref">Account {created.email} is set up. Log in to start your first consultation.</p>
+          <button
+            className="btn btn-primary"
+            type="button"
+            onClick={() => {
+              startSession(created);
+              onLogin(created);
+            }}
+          >
+            Continue - log me in
+          </button>
+        </section>
+      </div>
+    );
   }
 
   return (
