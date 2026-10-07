@@ -17,3 +17,11 @@ Thumbs.db
 
 # TS build cache
 *.tsbuildinfo
+
+# Android build outputs (keep the native shell, skip binaries/caches)
+*.apk
+app/android/.gradle/
+app/android/app/build/
+app/android/build/
+app/android/local.properties
+app/android/.idea/
