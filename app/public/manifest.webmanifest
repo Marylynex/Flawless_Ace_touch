@@ -1,0 +1,16 @@
+{
+  "name": "Flawless AceTouch",
+  "short_name": "AceTouch",
+  "description": "Online skin care consultations with vetted experts. Mock prototype.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAFBFA",
+  "theme_color": "#2E7D6F",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
