@@ -26,8 +26,8 @@ export async function ensureSchema(): Promise<boolean> {
       paid BOOLEAN NOT NULL DEFAULT FALSE,
       pay_ref TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    );
-    CREATE INDEX IF NOT EXISTS cases_email_idx ON cases (email);
+    )
   `;
+  await sql`CREATE INDEX IF NOT EXISTS cases_email_idx ON cases (email)`;
   return true;
 }
