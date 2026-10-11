@@ -25,3 +25,6 @@ app/android/app/build/
 app/android/build/
 app/android/local.properties
 app/android/.idea/
+
+# Server case store (local runtime data)
+app/data/cases.json

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { submitRequest, sendConfirmation, type EmailStatus, type MatchResult } from './services/mockApi';
+import { submitRequest, sendConfirmation, patchServerCase, type EmailStatus, type MatchResult } from './services/mockApi';
 import mockExperts from './data/mockExperts.json';
 import skinTips from './data/skinTips.json';
 import LearnLibrary from './components/LearnLibrary';
@@ -9,6 +9,7 @@ import ResearchChat from './components/ResearchChat';
 import PaymentCard from './components/PaymentCard';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
+import MyCases from './components/MyCases';
 import { getSession, logout, type User } from './services/auth';
 import { recordRequest, markPaid } from './services/store';
 
@@ -294,13 +295,14 @@ export default function App() {
           <div className="disclaimer" style={emailStatus?.sent ? { background: 'var(--success-soft)' } : undefined}>
             {emailStatus ? ((emailStatus.sent ? 'Sent: ' : '') + emailStatus.message) : 'Sending confirmation...'}
           </div>
-          <PaymentCard email={email} referenceId={result.referenceId} onPaid={(ref, payRef) => markPaid(ref, payRef)} />
+          <PaymentCard email={email} referenceId={result.referenceId} onPaid={(ref, payRef) => { markPaid(ref, payRef); patchServerCase(ref, { paid: true, payRef }).catch(() => {}); }} />
           <button className="btn-link" type="button" onClick={reset}>Submit another request</button>
         </section>
       )}
 
       {!result && (
         <>
+          <MyCases email={user.email} />
           <LearnLibrary />
           <ResearchChat />
         </>

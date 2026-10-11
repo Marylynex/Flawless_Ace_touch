@@ -36,12 +36,63 @@ export async function submitRequest(req: ConsultationRequest): Promise<MatchResu
   const expert =
     experts.find((e) => e.specialties.includes(req.concern)) ?? experts[0];
   const referenceId = 'FAT-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+  await recordServerCase(req, referenceId, expert.name);
   return { referenceId, expert, status: 'under review' };
 }
 
 export interface EmailStatus {
   sent: boolean;
   message: string;
+}
+
+export interface ServerCase {
+  id: string;
+  name: string;
+  email: string;
+  concern: string;
+  details: string;
+  photoName: string | null;
+  preferredTime: string;
+  expertName: string;
+  status: 'submitted' | 'under review' | 'answered';
+  paid: boolean;
+  payRef: string | null;
+  createdAt: string;
+}
+
+async function recordServerCase(req: ConsultationRequest, referenceId: string, expertName: string): Promise<void> {
+  try {
+    await fetch(`${API}/api/requests`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        referenceId, name: req.name, email: req.email, concern: req.concern,
+        details: req.details, photoName: req.photoName,
+        preferredTime: req.preferredTime, expertName,
+      }),
+    });
+  } catch {
+    // server unreachable (e.g. static preview) — local match still works
+  }
+}
+
+export async function listServerCases(email?: string): Promise<ServerCase[]> {
+  const url = email ? `${API}/api/requests?email=${encodeURIComponent(email)}` : `${API}/api/requests`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Could not load cases.');
+  const data = (await res.json()) as { cases: ServerCase[] };
+  return data.cases;
+}
+
+export async function patchServerCase(
+  id: string,
+  patch: { status?: ServerCase['status']; paid?: boolean; payRef?: string },
+): Promise<void> {
+  await fetch(`${API}/api/requests/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(patch),
+  });
 }
 
 const API = '';
