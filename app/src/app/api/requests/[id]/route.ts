@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { updateCase } from '@/lib/caseStore';
+import { rateLimited, clientIp } from '@/lib/safety';
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (rateLimited(`admin:${clientIp(req)}`, 60)) {
+    return NextResponse.json({ error: 'too-many-requests' }, { status: 429 });
+  }
   const { id } = await params;
   const body = (await req.json().catch(() => ({}))) as {
     status?: 'submitted' | 'under review' | 'answered'; paid?: boolean; payRef?: string;

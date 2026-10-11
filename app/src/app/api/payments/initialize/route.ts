@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
+import { rateLimited, clientIp } from '@/lib/safety';
 
 export async function POST(req: Request) {
+  if (rateLimited(`pay:${clientIp(req)}`, 20)) {
+    return NextResponse.json({ error: 'too-many-requests' }, { status: 429 });
+  }
   const body = (await req.json().catch(() => ({}))) as { email?: string; amountNgn?: number };
   const { email, amountNgn } = body;
   if (!email || !/.+@.+\..+/.test(email) || !amountNgn || Number(amountNgn) <= 0) {

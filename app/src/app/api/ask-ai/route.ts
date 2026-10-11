@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
+import { rateLimited, clientIp } from '@/lib/safety';
 
 const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 
 export async function POST(req: Request) {
+  if (rateLimited(`ai:${clientIp(req)}`, 20)) {
+    return NextResponse.json({ error: 'too-many-requests' }, { status: 429 });
+  }
   const body = (await req.json().catch(() => ({}))) as { question?: string };
-  const question = (body.question || '').trim();
+  const question = (body.question || '').trim().slice(0, 1000);
   if (!question) {
     return NextResponse.json({ error: 'question-required' }, { status: 400 });
   }
