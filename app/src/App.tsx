@@ -6,6 +6,7 @@ import mockExperts from './data/mockExperts.json';
 import skinTips from './data/skinTips.json';
 import LearnLibrary from './components/LearnLibrary';
 import ResearchChat from './components/ResearchChat';
+import SkinSearch from './components/SkinSearch';
 import PaymentCard from './components/PaymentCard';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
@@ -15,7 +16,7 @@ import { getSession, logout, type User } from './services/auth';
 import { recordRequest, markPaid } from './services/store';
 import { productsForConcern } from './data/products';
 
-type Tab = 'home' | 'consult' | 'shop' | 'learn' | 'forms';
+type Tab = 'home' | 'consult' | 'shop' | 'learn' | 'search' | 'forms';
 
 const CONCERNS = [
   { value: 'acne', label: 'Acne / breakouts' },
@@ -162,6 +163,7 @@ export default function App() {
     ? []
     : [
         { id: 'home', label: 'Home' },
+        { id: 'search', label: 'AI Search' },
         { id: 'consult', label: 'Consult' },
         { id: 'shop', label: 'Shop' },
         { id: 'learn', label: 'Learn' },
@@ -218,11 +220,11 @@ export default function App() {
                   Send a short form, get matched to a dermatologist or aesthetician, then buy the products they prescribe — all in one place.
                 </p>
                 <div className="hero-actions">
-                  <button className="btn btn-primary" type="button" onClick={() => setTab('consult')}>
-                    Start a consultation form
+                  <button className="btn btn-primary" type="button" onClick={() => setTab('search')}>
+                    Try AI skin-care search
                   </button>
-                  <button className="btn btn-ghost" type="button" onClick={() => setTab('shop')}>
-                    Browse the shop
+                  <button className="btn btn-ghost" type="button" onClick={() => setTab('consult')}>
+                    Start a consultation form
                   </button>
                 </div>
                 <div className="stats">
@@ -409,6 +411,10 @@ export default function App() {
                 ? 'These formulas are highlighted from your consultation. Pay on the platform and we pack the order (mock).'
                 : 'Dermatologist- and aesthetician-aligned formulas. Purchase on Flawless AceTouch.'}
             />
+          )}
+
+          {tab === 'search' && (
+            <SkinSearch onShop={() => setTab('shop')} />
           )}
 
           {tab === 'learn' && (

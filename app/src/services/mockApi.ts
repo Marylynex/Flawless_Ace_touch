@@ -98,6 +98,42 @@ export async function patchServerCase(
 
 const API = '';
 
+export interface SkinSearchResult {
+  query: string;
+  analyzed: boolean;
+  analysisNote: string;
+  scores: { type: string; uiScore: number }[];
+  concerns: string[];
+  products: {
+    id: string;
+    name: string;
+    concerns: string[];
+    priceNgn: number;
+    size: string;
+    blurb: string;
+    ingredient: string;
+  }[];
+  tips: { concern: string; title: string; body: string; ingredient: string }[];
+  articles: { id: string; title: string; tags: string[] }[];
+}
+
+export async function searchSkin(query: string, photo: File | null): Promise<SkinSearchResult> {
+  const form = new FormData();
+  form.append('query', query);
+  if (photo) form.append('photo', photo);
+  const res = await fetch(`${API}/api/skin-search`, { method: 'POST', body: form });
+  const data = (await res.json().catch(() => ({}))) as SkinSearchResult & { error?: string };
+  if (!res.ok) {
+    if (data.error === 'perfect-corp-not-configured') {
+      throw new Error('Perfect Corp is not configured. Restart the app after saving PERFECT_CORP_API_KEY.');
+    }
+    if (data.error === 'too-many-requests') throw new Error('Too many searches — wait a minute and try again.');
+    if (data.error === 'analysis-failed') throw new Error('Perfect Corp could not analyse that photo. Use a clear, front-facing selfie.');
+    throw new Error('Skin-care search is unavailable right now.');
+  }
+  return data;
+}
+
 export async function askAi(question: string): Promise<string> {
   const res = await fetch(`${API}/api/ask-ai`, {
     method: 'POST',

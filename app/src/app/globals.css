@@ -399,6 +399,13 @@ h1 {
 
 .consult-card .btn-primary { margin-top: 4px; }
 
+.search-results { margin-top: 24px; }
+.search-results h3 { font-family: var(--display); font-size: 22px; margin: 18px 0 8px; }
+.score-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 12px 0 16px; }
+.score-list li { display: grid; grid-template-columns: 120px 1fr 40px; gap: 10px; align-items: center; font-size: 13px; }
+.score-bar { height: 8px; background: var(--primary-soft); border-radius: 999px; overflow: hidden; }
+.score-bar i { display: block; height: 100%; background: var(--primary); }
+
 @media (max-width: 720px) {
   .topbar { border-radius: 20px; }
   .hero { padding: 28px 20px; }

@@ -6,6 +6,7 @@ export async function GET() {
     feeNgn: 5000,
     paystackLive: Boolean(process.env.PAYSTACK_SECRET_KEY),
     aiReady: Boolean(process.env.GROQ_API_KEY),
+    perfectCorpReady: Boolean(process.env.PERFECT_CORP_API_KEY),
     storage: usesPostgres() ? 'postgres' : 'file',
   });
 }
