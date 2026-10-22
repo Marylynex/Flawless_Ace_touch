@@ -39,16 +39,16 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
 
   if (created) {
     return (
-      <div className="wrap">
-        <header className="hero">
-          <span className="eyebrow">Flawless AceTouch - Prototype</span>
-          <h1>Account created</h1>
-          <p className="subtitle">Welcome, {created.name}! Your customer account is ready.</p>
-        </header>
+      <>
+        <section className="hero">
+          <span className="eyebrow">Welcome in</span>
+          <h1>Your studio pass is ready</h1>
+          <p className="subtitle">Hi {created.name} — your customer account is set. Next up: a consultation form or a browse of the shop.</p>
+        </section>
         <section className="card result">
-          <div className="check">OK</div>
+          <div className="check">✓</div>
           <h2>Signup successful</h2>
-          <p className="ref">Account {created.email} is set up. Log in to start your first consultation.</p>
+          <p className="ref">Account {created.email} is set up.</p>
           <button
             className="btn btn-primary"
             type="button"
@@ -57,25 +57,25 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
               onLogin(created);
             }}
           >
-            Continue - log me in
+            Continue — log me in
           </button>
         </section>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="wrap">
-      <header className="hero">
-        <span className="eyebrow">Flawless AceTouch - Prototype</span>
-        <h1>{mode === 'signup' ? 'Create your account' : 'Welcome back'}</h1>
+    <>
+      <section className="hero">
+        <span className="eyebrow">Flawless AceTouch</span>
+        <h1>{mode === 'signup' ? 'Skin care, guided by real experts.' : 'Welcome back to your routine.'}</h1>
         <p className="subtitle">
           {mode === 'signup'
-            ? 'Sign up as a customer to request consultations, learn and research. Demo only - no real credentials leave your browser.'
-            : 'Log in to request a consultation or manage the platform.'}
+            ? 'Create an account to send a consultation form, learn, and buy prescribed products on the platform.'
+            : 'Log in to continue a form, shop prescribed care, or manage the studio.'}
         </p>
-      </header>
-      <section className="card">
+      </section>
+      <section className="card auth-card">
         <div className="pills">
           <button type="button" className={mode === 'signup' ? 'pill active' : 'pill'} onClick={() => switchMode('signup')}>
             Sign up
@@ -84,7 +84,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
             Log in
           </button>
         </div>
-        <form onSubmit={submit} style={{ marginTop: 16 }}>
+        <form onSubmit={submit} className="auth-form">
           {mode === 'signup' && (
             <div className="field">
               <label htmlFor="su-name">Full name</label>
@@ -105,7 +105,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
           </button>
         </form>
         <div className="demo-accounts">
-          <p className="muted">Skip the forms with a one-tap demo account (mock - no real credentials):</p>
+          <p className="muted">Skip the forms with a one-tap demo account:</p>
           <div className="btn-row">
             <button className="btn btn-secondary" type="button" onClick={() => fill('customer@demo.local', 'customer123')}>
               Use customer account
@@ -116,6 +116,6 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }

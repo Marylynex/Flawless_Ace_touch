@@ -30,11 +30,11 @@ export async function POST(req: Request) {
     const result = await resend.emails.send({
       from: 'onboarding@resend.dev',
       to,
-      subject: `Your Flawless AceTouch consultation request ${referenceId}`,
+      subject: `Your Flawless AceTouch consultation form ${referenceId}`,
       html: `<p>Hi ${name},</p>
-<p>Thanks for requesting a skin consultation with <strong>Flawless AceTouch</strong>.</p>
+<p>Thanks for sending a skin consultation form to <strong>Flawless AceTouch</strong>.</p>
 <p>Concern: <strong>${concern}</strong><br/>Reference: <strong>${referenceId}</strong><br/>Matched expert: <strong>${expertName}</strong> (mock)</p>
-<p>Your request is under review. This is a prototype message with mock data — not medical advice.</p>`,
+<p>Your form is currently being reviewed. This is a prototype message with mock data — not medical advice.</p>`,
     });
     const data = result as unknown as { data?: { id?: string } | null };
     return NextResponse.json({ sent: true, id: data?.data?.id ?? null });

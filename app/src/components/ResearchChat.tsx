@@ -37,8 +37,8 @@ export default function ResearchChat() {
 
   return (
     <section className="card">
-      <h2>Research with AI</h2>
-      <p className="muted">Ask about skincare science and cosmetic formulation. Powered by Groq (mock key off by default).</p>
+      <h2>Ask a formulation question</h2>
+      <p className="muted">Plain-language answers about ingredients and routines. Not personal medical advice.</p>
       <div className="pills">
         {STARTERS.map((s) => (
           <button key={s} type="button" className="pill" onClick={() => send(s)}>

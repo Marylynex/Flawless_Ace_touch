@@ -32,7 +32,7 @@ const SEED: StoredRequest[] = [
     email: 'brian@example.com',
     concern: 'pigmentation',
     preferredTime: 'Weekend morning',
-    expertName: 'Dr. Lena Fischer',
+    expertName: 'Dr. Chioma Nwokolo',
     paid: false,
     payRef: null,
     createdAt: new Date(Date.now() - 3600000).toISOString(),

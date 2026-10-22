@@ -1,0 +1,83 @@
+[
+  {
+    "id": "prd-ace-clear",
+    "name": "AceClear Salicylic Cleanser",
+    "concerns": ["acne"],
+    "priceNgn": 8500,
+    "size": "150 ml",
+    "blurb": "A gentle 2% BHA gel cleanser that unclogs pores without stripping.",
+    "ingredient": "Salicylic acid, niacinamide"
+  },
+  {
+    "id": "prd-barrier",
+    "name": "Barrier Repair Ceramide Cream",
+    "concerns": ["dryness", "sensitivity"],
+    "priceNgn": 12500,
+    "size": "50 ml",
+    "blurb": "Replenishes lipids so tightness after cleansing eases within days.",
+    "ingredient": "Ceramides, hyaluronic acid, squalane"
+  },
+  {
+    "id": "prd-bright",
+    "name": "Lumina C Brightening Serum",
+    "concerns": ["pigmentation", "uneven-tone"],
+    "priceNgn": 15500,
+    "size": "30 ml",
+    "blurb": "Daily vitamin C to fade spots and even tone — always pair with SPF.",
+    "ingredient": "Vitamin C, azelaic acid"
+  },
+  {
+    "id": "prd-calm",
+    "name": "Calm Centella Rescue Gel",
+    "concerns": ["sensitivity", "rosacea"],
+    "priceNgn": 9800,
+    "size": "40 ml",
+    "blurb": "Fragrance-free soothing gel for redness-prone and reactive skin.",
+    "ingredient": "Centella, oat extract"
+  },
+  {
+    "id": "prd-even",
+    "name": "EvenTone Niacinamide Drops",
+    "concerns": ["uneven-tone", "acne"],
+    "priceNgn": 11000,
+    "size": "30 ml",
+    "blurb": "Lightweight 10% niacinamide to refine texture and even the look of tone.",
+    "ingredient": "Niacinamide, zinc PCA"
+  },
+  {
+    "id": "prd-night",
+    "name": "Night Peptide Firming Cream",
+    "concerns": ["early-aging"],
+    "priceNgn": 18500,
+    "size": "50 ml",
+    "blurb": "Peptides and a slow-release retinoid alternative for overnight firmness.",
+    "ingredient": "Peptides, bakuchiol"
+  },
+  {
+    "id": "prd-stretch",
+    "name": "Stretch Ease Body Oil",
+    "concerns": ["stretch-marks"],
+    "priceNgn": 14200,
+    "size": "100 ml",
+    "blurb": "Massage-in oil to keep skin supple along hips, tummy, and thighs.",
+    "ingredient": "Rosehip, centella, vitamin E"
+  },
+  {
+    "id": "prd-rosa",
+    "name": "Rosacea Soothe Cream",
+    "concerns": ["rosacea"],
+    "priceNgn": 16500,
+    "size": "40 ml",
+    "blurb": "Calms butterfly-pattern redness across cheeks and nose. Fragrance-free.",
+    "ingredient": "Azelaic acid, green tea, centella"
+  },
+  {
+    "id": "prd-spf",
+    "name": "Daily Shield SPF 50",
+    "concerns": ["pigmentation", "uneven-tone", "early-aging", "rosacea", "acne"],
+    "priceNgn": 9000,
+    "size": "50 ml",
+    "blurb": "Lightweight daily SPF every routine needs — the expert non-negotiable.",
+    "ingredient": "Broad-spectrum SPF 50"
+  }
+]

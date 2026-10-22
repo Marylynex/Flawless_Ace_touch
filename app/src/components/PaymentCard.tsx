@@ -2,10 +2,27 @@
 
 import { useState } from 'react';
 import { initPayment, verifyPayment } from '../services/mockApi';
+import { formatNgn } from '../data/products';
 
 const FEE_NGN = 5000;
 
-export default function PaymentCard({ email, referenceId, onPaid }: { email: string; referenceId: string; onPaid?: (referenceId: string, payRef: string) => void }) {
+export default function PaymentCard({
+  email,
+  referenceId,
+  onPaid,
+  amountNgn = FEE_NGN,
+  title = 'Consultation fee',
+  description = 'Covers expert review of your form (mock payment — no real charge).',
+  successNote,
+}: {
+  email: string;
+  referenceId: string;
+  onPaid?: (referenceId: string, payRef: string) => void;
+  amountNgn?: number;
+  title?: string;
+  description?: string;
+  successNote?: string;
+}) {
   const [state, setState] = useState<'idle' | 'ready' | 'verifying' | 'paid' | 'error'>('idle');
   const [payRef, setPayRef] = useState('');
   const [note, setNote] = useState('');
@@ -14,9 +31,9 @@ export default function PaymentCard({ email, referenceId, onPaid }: { email: str
   async function start() {
     setBusy(true);
     try {
-      const init = await initPayment(email, FEE_NGN);
+      const init = await initPayment(email, amountNgn);
       setPayRef(init.reference);
-      setNote(init.mock ? (init.note || 'Mock checkout - no real charge.') : 'Redirect to Paystack to complete payment.');
+      setNote(init.mock ? (init.note || 'Mock checkout — no real charge.') : 'Redirect to Paystack to complete payment.');
       setState('ready');
       if (!init.mock && init.authorization_url && init.authorization_url !== '#mock-paystack-checkout') {
         window.open(init.authorization_url, '_blank', 'noopener');
@@ -46,19 +63,19 @@ export default function PaymentCard({ email, referenceId, onPaid }: { email: str
   if (state === 'paid') {
     return (
       <div className="pay-card success">
-        <strong>Service charge paid - NGN {FEE_NGN.toLocaleString()}</strong>
-        <p className="muted">Receipt: {payRef} (consultation {referenceId}). Your expert review proceeds.</p>
+        <strong>{title} paid — {formatNgn(amountNgn)}</strong>
+        <p className="muted">{successNote || `Receipt: ${payRef} (form ${referenceId}). Your expert review proceeds.`}</p>
       </div>
     );
   }
 
   return (
     <div className="pay-card">
-      <strong>Service charge: NGN {FEE_NGN.toLocaleString()}</strong>
-      <p className="muted">Covers expert review of your consultation (mock payment - no real charge).</p>
+      <strong>{title}: {formatNgn(amountNgn)}</strong>
+      <p className="muted">{description}</p>
       {state === 'idle' && (
         <button className="btn btn-primary" type="button" onClick={start} disabled={busy}>
-          {busy ? 'Starting checkout...' : 'Pay service charge'}
+          {busy ? 'Starting checkout...' : `Pay ${formatNgn(amountNgn)}`}
         </button>
       )}
       {state === 'ready' && (
@@ -71,7 +88,7 @@ export default function PaymentCard({ email, referenceId, onPaid }: { email: str
       )}
       {state === 'verifying' && <p className="muted">Verifying payment...</p>}
       {state === 'error' && (
-        <p className="err">Payment could not be completed. Make sure the email server is running, then try again.</p>
+        <p className="err">Payment could not be completed. Try again in a moment.</p>
       )}
     </div>
   );

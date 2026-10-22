@@ -4,6 +4,7 @@ export interface Expert {
   id: string;
   name: string;
   credentials: string;
+  role?: string;
   specialties: string[];
   language: string;
   rating: number;
@@ -79,7 +80,7 @@ async function recordServerCase(req: ConsultationRequest, referenceId: string, e
 export async function listServerCases(email?: string): Promise<ServerCase[]> {
   const url = email ? `${API}/api/requests?email=${encodeURIComponent(email)}` : `${API}/api/requests`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error('Could not load cases.');
+  if (!res.ok) throw new Error('Could not load forms.');
   const data = (await res.json()) as { cases: ServerCase[] };
   return data.cases;
 }

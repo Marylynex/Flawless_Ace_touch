@@ -9,9 +9,13 @@ import ResearchChat from './components/ResearchChat';
 import PaymentCard from './components/PaymentCard';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
-import MyCases from './components/MyCases';
+import MyForms from './components/MyForms';
+import Shop from './components/Shop';
 import { getSession, logout, type User } from './services/auth';
 import { recordRequest, markPaid } from './services/store';
+import { productsForConcern } from './data/products';
+
+type Tab = 'home' | 'consult' | 'shop' | 'learn' | 'forms';
 
 const CONCERNS = [
   { value: 'acne', label: 'Acne / breakouts' },
@@ -20,18 +24,21 @@ const CONCERNS = [
   { value: 'sensitivity', label: 'Sensitivity / redness' },
   { value: 'uneven-tone', label: 'Uneven tone' },
   { value: 'early-aging', label: 'Early aging / fine lines' },
+  { value: 'stretch-marks', label: 'Stretch marks' },
+  { value: 'rosacea', label: 'Butterfly rash / rosacea' },
 ];
 
 const TIMES = ['Weekday morning', 'Weekday afternoon', 'Weekday evening', 'Weekend morning', 'Weekend afternoon'];
 
 const STEPS = [
   { n: '1', title: 'Tell us about your skin', body: 'Goals, concerns, routine and an optional photo. Two minutes, guided.' },
-  { n: '2', title: 'Meet your matched expert', body: 'We pair you with a vetted dermatologist or skin expert for your concern.' },
-  { n: '3', title: 'Get your routine', body: 'A clear AM/PM plan with healthy product picks, reviewed by your expert.' },
+  { n: '2', title: 'Meet your matched expert', body: 'One dermatologist and three aestheticians, matched to your concern.' },
+  { n: '3', title: 'Get your routine — then shop it', body: 'A clear AM/PM plan, with prescribed products you can buy here.' },
 ];
 
 export default function App() {
   const [user, setUser] = useState<User | null>(() => getSession());
+  const [tab, setTab] = useState<Tab>('home');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [concern, setConcern] = useState('acne');
@@ -46,6 +53,7 @@ export default function App() {
   const [emailStatus, setEmailStatus] = useState<EmailStatus | null>(null);
 
   const tip = skinTips.find((t) => t.concern === concern) ?? skinTips[0];
+  const prescribed = productsForConcern(concern);
 
   function onPhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -61,7 +69,7 @@ export default function App() {
     setError('');
     if (photoUrl) URL.revokeObjectURL(photoUrl);
     setPhotoName(file.name);
-    setPhotoUrl(URL.createObjectURL(file)); // local preview only — nothing is uploaded
+    setPhotoUrl(URL.createObjectURL(file));
   }
 
   async function onSubmit(e: FormEvent) {
@@ -118,7 +126,7 @@ export default function App() {
     if (photoUrl) URL.revokeObjectURL(photoUrl);
     setPhotoUrl(null);
     setError('');
-    setFileKey((k) => k + 1); // clear the file input element
+    setFileKey((k) => k + 1);
   }
 
   const firstName = name.split(' ')[0] || 'there';
@@ -127,192 +135,306 @@ export default function App() {
     logout();
     setUser(null);
     reset();
+    setTab('home');
   }
+
+  const experts = mockExperts as {
+    id: string;
+    name: string;
+    credentials: string;
+    role: string;
+    rating: number;
+    specialties: string[];
+  }[];
 
   if (!user) {
     return (
-      <div className="wrap">
+      <div className="shell">
         <Login onLogin={setUser} />
         <footer className="footer">
-          General skincare guidance only - not a medical diagnosis. Mock data only.
+          General skincare guidance only — not a medical diagnosis. Mock data only.
         </footer>
       </div>
     );
   }
 
+  const nav: { id: Tab; label: string }[] = user.role === 'admin'
+    ? []
+    : [
+        { id: 'home', label: 'Home' },
+        { id: 'consult', label: 'Consult' },
+        { id: 'shop', label: 'Shop' },
+        { id: 'learn', label: 'Learn' },
+        { id: 'forms', label: 'My forms' },
+      ];
+
   return (
-    <div className="wrap">
-      <div className="userbar">
-        <span>Logged in as <strong>{user.name}</strong> ({user.role})</span>
-        <button className="btn-link" type="button" onClick={handleLogout}>Log out</button>
-      </div>
-      {user.role === 'admin' ? (
-        <>
-          <header className="hero">
-            <span className="eyebrow">Flawless AceTouch - Admin</span>
-            <h1>Platform overview</h1>
-            <p className="subtitle">Requests, experts, payments and learn content. Mock data only.</p>
-          </header>
-          <AdminDashboard />
-        </>
-      ) : (
-      <>
-      <header className="hero">
-        <span className="eyebrow">Flawless AceTouch - Prototype</span>
-        <h1>Know your skin. Love your routine.</h1>
-        <p className="subtitle">
-          Tell us about your skin and a vetted expert reviews your case and builds
-          your routine. Mock data only - nothing leaves your browser.
-        </p>
-        <div className="stats">
-          <div><strong>12</strong><span>vetted experts (mock)</span></div>
-          <div><strong>24h</strong><span>typical response</span></div>
-          <div><strong>4.9</strong><span>average rating</span></div>
+    <div className="shell">
+      <header className="topbar">
+        <button type="button" className="brand" onClick={() => setTab('home')}>
+          <span className="logo">FA</span>
+          <span>
+            <strong>Flawless AceTouch</strong>
+            <em>Skin care, expert-led</em>
+          </span>
+        </button>
+        {nav.length > 0 && (
+          <nav className="nav" aria-label="Primary">
+            {nav.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={tab === item.id ? 'nav-link active' : 'nav-link'}
+                onClick={() => setTab(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        )}
+        <div className="userchip">
+          <span>{user.name}</span>
+          <button className="btn-link" type="button" onClick={handleLogout}>Log out</button>
         </div>
       </header>
 
-      {!result ? (
+      {user.role === 'admin' ? (
         <>
-          <section className="card">
-            <h2>How it works</h2>
-            <div className="steps">
-              {STEPS.map((s) => (
-                <div className="step" key={s.n}>
-                  <div className="step-n">{s.n}</div>
-                  <strong>{s.title}</strong>
-                  <p>{s.body}</p>
-                </div>
-              ))}
-            </div>
+          <section className="hero">
+            <span className="eyebrow">Admin studio</span>
+            <h1>Keep every form moving</h1>
+            <p className="subtitle">Review consultation forms, experts, payments and the learn library.</p>
           </section>
-
-          <section className="card">
-            <h2>Meet some of our experts</h2>
-            <p className="muted">Mock profiles for this prototype.</p>
-            <div className="experts">
-              {(mockExperts as { id: string; name: string; credentials: string; rating: number }[]).map((ex) => (
-                <div className="expert-card" key={ex.id}>
-                  <div className="avatar">{ex.name.charAt(0)}</div>
-                  <strong>{ex.name}</strong>
-                  <span className="muted">{ex.credentials}</span>
-                  <span className="rating">* {ex.rating}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="card">
-            <h2>Request Skin Consultation</h2>
-            <form onSubmit={onSubmit}>
-              <div className="field">
-                <label htmlFor="name">Name</label>
-                <input
-                  id="name" type="text" placeholder="e.g. Jane Doe"
-                  value={name} onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email" type="text" placeholder="e.g. jane@example.com"
-                  value={email} onChange={(e) => setEmail(e.target.value)}
-                />
-                <div className="help">Used only for the confirmation email (mock prototype).</div>
-              </div>
-              <div className="field">
-                <label>What bothers you most?</label>
-                <div className="pills">
-                  {CONCERNS.map((c) => (
-                    <button
-                      key={c.value}
-                      type="button"
-                      className={concern === c.value ? 'pill active' : 'pill'}
-                      onClick={() => setConcern(c.value)}
-                    >
-                      {c.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="tip">
-                <strong>Skin school: {tip.title}</strong>
-                <p>{tip.body}</p>
-                <span>{tip.ingredient}</span>
-              </div>
-              <div className="field">
-                <label htmlFor="details">Describe your skin concern</label>
-                <textarea
-                  id="details" placeholder="e.g. Breakouts along my jawline; skin feels tight after cleansing..."
-                  value={details} onChange={(e) => setDetails(e.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="photo">Photo upload (optional, mock only)</label>
-                <input id="photo" key={fileKey} type="file" accept="image/*" onChange={onPhoto} />
-                <div className="help">Preview stays on this page - no upload, no storage.</div>
-                {photoUrl && (
-                  <div className="preview"><img src={photoUrl} alt="Mock upload preview" /></div>
-                )}
-              </div>
-              <div className="field">
-                <label htmlFor="time">Preferred consultation time</label>
-                <select id="time" value={preferredTime} onChange={(e) => setPreferredTime(e.target.value)}>
-                  {TIMES.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-              {error && <div className="field"><div className="err">{error}</div></div>}
-              <button className="btn btn-primary" type="submit" disabled={submitting}>
-                {submitting ? 'Matching you with an expert...' : 'Book Consultation'}
-              </button>
-            </form>
-          </section>
+          <AdminDashboard />
         </>
       ) : (
-        <section className="card result">
-          <div className="check">OK</div>
-          <h2>You are matched, {firstName}!</h2>
-          <p className="ref">Reference: {result.referenceId} - Preferred time: {preferredTime}</p>
-          <div className="expert">
-            <div className="avatar lg">{result.expert.name.charAt(0)}</div>
-            <div>
-              <strong>{result.expert.name}</strong>
-              <div>{result.expert.credentials} - Rating {result.expert.rating} - {result.expert.language}</div>
-              <div>Responds {result.expert.responseWindow} (mock).</div>
-            </div>
-          </div>
-          <ul className="timeline">
-            <li className="done">Submitted - we received your request</li>
-            <li className="now">Under review - {result.expert.name.split(' ')[0]} is reviewing your case</li>
-            <li className="todo">Answered - expect your routine {result.expert.responseWindow}</li>
-          </ul>
-          <div className="tip">
-            <strong>While you wait - {tip.title}</strong>
-            <p>{tip.body}</p>
-            <span>{tip.ingredient}</span>
-          </div>
-          <div className="disclaimer" style={emailStatus?.sent ? { background: 'var(--success-soft)' } : undefined}>
-            {emailStatus ? ((emailStatus.sent ? 'Sent: ' : '') + emailStatus.message) : 'Sending confirmation...'}
-          </div>
-          <PaymentCard email={email} referenceId={result.referenceId} onPaid={(ref, payRef) => { markPaid(ref, payRef); patchServerCase(ref, { paid: true, payRef }).catch(() => {}); }} />
-          <button className="btn-link" type="button" onClick={reset}>Submit another request</button>
-        </section>
-      )}
-
-      {!result && (
         <>
-          <MyCases email={user.email} />
-          <LearnLibrary />
-          <ResearchChat />
-        </>
-      )}
+          {tab === 'home' && (
+            <>
+              <section className="hero">
+                <span className="eyebrow">Know your skin · love your routine</span>
+                <h1>Expert skin care that feels like a studio visit.</h1>
+                <p className="subtitle">
+                  Send a short form, get matched to a dermatologist or aesthetician, then buy the products they prescribe — all in one place.
+                </p>
+                <div className="hero-actions">
+                  <button className="btn btn-primary" type="button" onClick={() => setTab('consult')}>
+                    Start a consultation form
+                  </button>
+                  <button className="btn btn-ghost" type="button" onClick={() => setTab('shop')}>
+                    Browse the shop
+                  </button>
+                </div>
+                <div className="stats">
+                  <div><strong>1 + 3</strong><span>dermatologist &amp; aestheticians</span></div>
+                  <div><strong>24h</strong><span>typical response</span></div>
+                  <div><strong>4.9</strong><span>average rating</span></div>
+                </div>
+              </section>
 
-      <footer className="footer">
-        General skincare guidance only - not a medical diagnosis. All experts, tips and replies
-        in this prototype are mock data.
-      </footer>
-      </>
+              <section className="card">
+                <h2>How it works</h2>
+                <div className="steps">
+                  {STEPS.map((s) => (
+                    <div className="step" key={s.n}>
+                      <div className="step-n">{s.n}</div>
+                      <strong>{s.title}</strong>
+                      <p>{s.body}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="card">
+                <div className="section-head">
+                  <div>
+                    <h2>Your clinic team</h2>
+                    <p className="muted">One dermatologist and three aestheticians — including Dr. Chioma Nwokolo.</p>
+                  </div>
+                </div>
+                <div className="experts">
+                  {experts.map((ex) => (
+                    <div className="expert-card" key={ex.id}>
+                      <div className="avatar">{ex.name.replace(/^Dr\.\s/, '').charAt(0)}</div>
+                      <span className="role-tag">{ex.role}</span>
+                      <strong>{ex.name}</strong>
+                      <span className="muted">{ex.credentials}</span>
+                      <span className="rating">★ {ex.rating}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </>
+          )}
+
+          {tab === 'consult' && (
+            <>
+              {!result ? (
+                <section className="card consult-card">
+                  <div className="section-head">
+                    <div>
+                      <h2>Consultation form</h2>
+                      <p className="muted">Share what bothers you. A matched expert reviews your form and builds your plan.</p>
+                    </div>
+                  </div>
+                  <form onSubmit={onSubmit}>
+                    <div className="grid-2">
+                      <div className="field">
+                        <label htmlFor="name">Name</label>
+                        <input
+                          id="name" type="text" placeholder="e.g. Jane Doe"
+                          value={name} onChange={(e) => setName(e.target.value)}
+                        />
+                      </div>
+                      <div className="field">
+                        <label htmlFor="email">Email</label>
+                        <input
+                          id="email" type="text" placeholder="e.g. jane@example.com"
+                          value={email} onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <div className="help">Used only for the confirmation (mock prototype).</div>
+                      </div>
+                    </div>
+                    <div className="field">
+                      <label>What bothers you most?</label>
+                      <div className="pills">
+                        {CONCERNS.map((c) => (
+                          <button
+                            key={c.value}
+                            type="button"
+                            className={concern === c.value ? 'pill active' : 'pill'}
+                            onClick={() => setConcern(c.value)}
+                          >
+                            {c.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="tip">
+                      <strong>Skin school: {tip.title}</strong>
+                      <p>{tip.body}</p>
+                      <span>{tip.ingredient}</span>
+                    </div>
+                    <div className="field">
+                      <label htmlFor="details">Describe your skin concern</label>
+                      <textarea
+                        id="details" placeholder="e.g. Breakouts along my jawline; skin feels tight after cleansing..."
+                        value={details} onChange={(e) => setDetails(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid-2">
+                      <div className="field">
+                        <label htmlFor="photo">Photo (optional, mock only)</label>
+                        <input id="photo" key={fileKey} type="file" accept="image/*" onChange={onPhoto} />
+                        <div className="help">Preview stays on this page — no upload, no storage.</div>
+                        {photoUrl && (
+                          <div className="preview"><img src={photoUrl} alt="Mock upload preview" /></div>
+                        )}
+                      </div>
+                      <div className="field">
+                        <label htmlFor="time">Preferred consultation time</label>
+                        <select id="time" value={preferredTime} onChange={(e) => setPreferredTime(e.target.value)}>
+                          {TIMES.map((t) => (
+                            <option key={t} value={t}>{t}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    {error && <div className="field"><div className="err">{error}</div></div>}
+                    <button className="btn btn-primary" type="submit" disabled={submitting}>
+                      {submitting ? 'Matching you with an expert...' : 'Submit consultation form'}
+                    </button>
+                  </form>
+                </section>
+              ) : (
+                <section className="card result">
+                  <div className="check">✓</div>
+                  <h2>Your form is in, {firstName}</h2>
+                  <p className="ref">Reference: {result.referenceId} · Preferred time: {preferredTime}</p>
+                  <div className="expert">
+                    <div className="avatar lg">{result.expert.name.replace(/^Dr\.\s/, '').charAt(0)}</div>
+                    <div>
+                      <strong>{result.expert.name}</strong>
+                      <div>{result.expert.credentials} · Rating {result.expert.rating} · {result.expert.language}</div>
+                      <div>Responds {result.expert.responseWindow} (mock).</div>
+                    </div>
+                  </div>
+                  <ul className="timeline">
+                    <li className="done">Submitted — we received your form</li>
+                    <li className="now">Your form is currently being reviewed by {result.expert.name}</li>
+                    <li className="todo">Answered — expect your routine {result.expert.responseWindow}</li>
+                  </ul>
+                  <div className="tip">
+                    <strong>While you wait — {tip.title}</strong>
+                    <p>{tip.body}</p>
+                    <span>{tip.ingredient}</span>
+                  </div>
+                  <div className="disclaimer" style={emailStatus?.sent ? { background: 'var(--success-soft)' } : undefined}>
+                    {emailStatus ? ((emailStatus.sent ? 'Sent: ' : '') + emailStatus.message) : 'Sending confirmation...'}
+                  </div>
+                  <PaymentCard
+                    email={email}
+                    referenceId={result.referenceId}
+                    onPaid={(ref, payRef) => {
+                      markPaid(ref, payRef);
+                      patchServerCase(ref, { paid: true, payRef }).catch(() => {});
+                    }}
+                  />
+
+                  <div className="prescribed-block">
+                    <h3>Prescribed for your concern</h3>
+                    <p className="muted">Buy these picks on the platform. Add them in Shop — they are already highlighted for you.</p>
+                    <ul className="plain-list">
+                      {prescribed.map((p) => (
+                        <li key={p.id}><strong>{p.name}</strong> <span className="muted">— {p.ingredient}</span></li>
+                      ))}
+                    </ul>
+                    <button className="btn btn-primary" type="button" onClick={() => setTab('shop')}>
+                      Buy prescribed products
+                    </button>
+                  </div>
+
+                  <button className="btn-link" type="button" onClick={reset}>Submit another form</button>
+                </section>
+              )}
+            </>
+          )}
+
+          {tab === 'shop' && (
+            <Shop
+              email={user.email}
+              highlightIds={result ? prescribed.map((p) => p.id) : undefined}
+              heading={result ? 'Buy your prescribed products' : 'Shop skin care'}
+              sub={result
+                ? 'These formulas are highlighted from your consultation. Pay on the platform and we pack the order (mock).'
+                : 'Dermatologist- and aesthetician-aligned formulas. Purchase on Flawless AceTouch.'}
+            />
+          )}
+
+          {tab === 'learn' && (
+            <>
+              <LearnLibrary />
+              <ResearchChat />
+            </>
+          )}
+
+          {tab === 'forms' && (
+            <>
+              <MyForms email={user.email} />
+              <section className="card">
+                <h2>Need a new form?</h2>
+                <p className="muted">Start a consultation whenever a new concern shows up.</p>
+                <button className="btn btn-primary" type="button" onClick={() => { reset(); setTab('consult'); }}>
+                  Open consultation form
+                </button>
+              </section>
+            </>
+          )}
+
+          <footer className="footer">
+            General skincare guidance only — not a medical diagnosis. Experts, tips and replies in this prototype are mock data.
+          </footer>
+        </>
       )}
     </div>
   );

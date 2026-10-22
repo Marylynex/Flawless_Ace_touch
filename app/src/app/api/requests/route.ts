@@ -3,7 +3,7 @@ import { listCases, createCase } from '@/lib/caseStore';
 import { escapeHtml, rateLimited, clientIp } from '@/lib/safety';
 import { Resend } from 'resend';
 
-const CONCERNS = ['acne', 'dryness', 'pigmentation', 'sensitivity', 'uneven-tone', 'early-aging'];
+const CONCERNS = ['acne', 'dryness', 'pigmentation', 'sensitivity', 'uneven-tone', 'early-aging', 'stretch-marks', 'rosacea'];
 
 async function notifySpecialist(rec: {
   id: string; name: string; email: string; concern: string;
@@ -17,11 +17,11 @@ async function notifySpecialist(rec: {
     await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: inbox,
-      subject: `New consultation case ${rec.id} - ${rec.concern}`,
-      html: `<p>A new consultation request needs review.</p>
-<p>Case: <strong>${escapeHtml(rec.id)}</strong><br/>Client: <strong>${escapeHtml(rec.name)}</strong> (${escapeHtml(rec.email)})<br/>Concern: <strong>${escapeHtml(rec.concern)}</strong><br/>Preferred time: <strong>${escapeHtml(rec.preferredTime || '-')}</strong><br/>Matched expert: <strong>${escapeHtml(rec.expertName || '-')}</strong></p>
+      subject: `New consultation form ${rec.id} - ${rec.concern}`,
+      html: `<p>A new consultation form needs review.</p>
+<p>Form: <strong>${escapeHtml(rec.id)}</strong><br/>Client: <strong>${escapeHtml(rec.name)}</strong> (${escapeHtml(rec.email)})<br/>Concern: <strong>${escapeHtml(rec.concern)}</strong><br/>Preferred time: <strong>${escapeHtml(rec.preferredTime || '-')}</strong><br/>Matched expert: <strong>${escapeHtml(rec.expertName || '-')}</strong></p>
 <p>Client notes:</p><blockquote>${escapeHtml(rec.details || '-')}</blockquote>
-<p>Open the admin portal to review this case. Mock prototype data.</p>`,
+<p>Open the admin portal to review this form. Mock prototype data.</p>`,
     });
   } catch (err) {
     console.error('[requests] specialist notify failed:', err instanceof Error ? err.message : err);

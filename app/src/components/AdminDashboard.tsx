@@ -12,7 +12,7 @@ const NEXT_STATUS: Record<ServerCase['status'], ServerCase['status']> = {
 };
 
 export default function AdminDashboard() {
-  const [cases, setCases] = useState<ServerCase[]>([]);
+  const [forms, setForms] = useState<ServerCase[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -20,9 +20,9 @@ export default function AdminDashboard() {
     setLoading(true);
     setError('');
     try {
-      setCases(await listServerCases());
+      setForms(await listServerCases());
     } catch {
-      setError('Could not load cases from the server. Is the app server running?');
+      setError('Could not load forms from the server. Is the app server running?');
     } finally {
       setLoading(false);
     }
@@ -34,7 +34,7 @@ export default function AdminDashboard() {
 
   async function advance(c: ServerCase) {
     const next = NEXT_STATUS[c.status];
-    setCases((rows) => rows.map((r) => (r.id === c.id ? { ...r, status: next } : r)));
+    setForms((rows) => rows.map((r) => (r.id === c.id ? { ...r, status: next } : r)));
     try {
       await patchServerCase(c.id, { status: next });
     } catch {
@@ -42,29 +42,29 @@ export default function AdminDashboard() {
     }
   }
 
-  const paid = cases.filter((r) => r.paid).length;
-  const experts = mockExperts as { id: string; name: string; credentials: string; rating: number; responseWindow: string }[];
+  const paid = forms.filter((r) => r.paid).length;
+  const experts = mockExperts as { id: string; name: string; credentials: string; role: string; rating: number; responseWindow: string }[];
   const articles = learnArticles as { id: string; title: string; minutes: number; level: string }[];
 
   return (
     <>
       <section className="card">
-        <h2>Admin overview</h2>
+        <h2>Studio overview</h2>
         <div className="stats">
-          <div><strong>{loading ? '-' : cases.length}</strong><span>cases on server</span></div>
+          <div><strong>{loading ? '-' : forms.length}</strong><span>forms on server</span></div>
           <div><strong>{loading ? '-' : paid}</strong><span>paid (mock)</span></div>
-          <div><strong>{experts.length}</strong><span>experts (mock)</span></div>
+          <div><strong>{experts.length}</strong><span>clinicians</span></div>
           <div><strong>{articles.length}</strong><span>learn articles</span></div>
         </div>
-        <button className="btn btn-secondary" type="button" onClick={refresh}>Refresh cases</button>
+        <button className="btn btn-secondary" type="button" onClick={refresh}>Refresh forms</button>
         {error && <p className="err" style={{ marginTop: 10 }}>{error}</p>}
       </section>
 
       <section className="card">
-        <h2>Cases</h2>
-        <p className="muted">Stored on the server - visible from any device. Tap a status to advance it.</p>
+        <h2>Consultation forms</h2>
+        <p className="muted">Stored on the server. Tap a status to advance it. When a form is answered, the client can buy prescribed products.</p>
         {loading ? (
-          <p className="muted">Loading cases...</p>
+          <p className="muted">Loading forms...</p>
         ) : (
           <div className="table-wrap">
             <table className="table">
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {cases.map((r) => (
+                {forms.map((r) => (
                   <tr key={r.id}>
                     <td>{r.id}</td>
                     <td>{r.name}<br /><span className="muted">{r.email}</span></td>
@@ -100,24 +100,25 @@ export default function AdminDashboard() {
       </section>
 
       <section className="card">
-        <h2>Experts (mock)</h2>
+        <h2>Clinicians</h2>
         <div className="experts">
           {experts.map((ex) => (
             <div className="expert-card" key={ex.id}>
-              <div className="avatar">{ex.name.charAt(0)}</div>
+              <div className="avatar">{ex.name.replace(/^Dr\.\s/, '').charAt(0)}</div>
+              <span className="role-tag">{ex.role}</span>
               <strong>{ex.name}</strong>
               <span className="muted">{ex.credentials}</span>
-              <span className="rating">* {ex.rating} - {ex.responseWindow}</span>
+              <span className="rating">★ {ex.rating} · {ex.responseWindow}</span>
             </div>
           ))}
         </div>
       </section>
 
       <section className="card">
-        <h2>Learn library (mock)</h2>
+        <h2>Learn library</h2>
         <ul className="plain-list">
           {articles.map((a) => (
-            <li key={a.id}><strong>{a.title}</strong> <span className="muted">- {a.minutes} min, {a.level}</span></li>
+            <li key={a.id}><strong>{a.title}</strong> <span className="muted">— {a.minutes} min, {a.level}</span></li>
           ))}
         </ul>
       </section>

@@ -19,8 +19,8 @@ export default function LearnLibrary() {
 
   return (
     <section className="card">
-      <h2>Learn: skincare and formulation school</h2>
-      <p className="muted">Short, plain-language lessons. Mock educational content for this prototype.</p>
+      <h2>Skin school</h2>
+      <p className="muted">Short lessons on ingredients, barriers and buying well. Educational only — not a diagnosis.</p>
       <div className="learn-grid">
         {articles.map((a) => (
           <button
