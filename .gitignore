@@ -33,3 +33,6 @@ app/android/upload-keystore.jks
 
 # Server case store (local runtime data)
 app/data/cases.json
+
+# Local Netlify folder
+.netlify
