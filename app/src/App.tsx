@@ -211,6 +211,8 @@ export default function App() {
         <Login onLogin={setUser} />
         <footer className="footer">
           General skincare guidance only — not a medical diagnosis. Mock data only.
+          {' · '}
+          <a href="/downloads/FlawlessAceTouch-release-signed.apk">Download Android APK</a>
         </footer>
       </div>
     );
@@ -471,6 +473,8 @@ export default function App() {
 
           <footer className="footer">
             General skincare guidance only — not a medical diagnosis. Experts, tips and replies in this prototype are mock data.
+            {' · '}
+            <a href="/downloads/FlawlessAceTouch-release-signed.apk">Download Android APK</a>
           </footer>
         </>
       )}

@@ -117,6 +117,12 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
               Use admin account
             </button>
           </div>
+          <p className="muted" style={{ marginTop: 16 }}>
+            To install on Android, download the APK from this site — the homepage is the web app, not the installer file.
+          </p>
+          <a className="btn btn-primary" href="/downloads/FlawlessAceTouch-release-signed.apk">
+            Download Android APK
+          </a>
         </div>
       </section>
     </>
