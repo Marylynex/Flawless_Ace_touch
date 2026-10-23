@@ -25,6 +25,11 @@ app/android/app/build/
 app/android/build/
 app/android/local.properties
 app/android/.idea/
+*.jks
+*.keystore
+keystore.properties
+app/android/keystore.properties
+app/android/upload-keystore.jks
 
 # Server case store (local runtime data)
 app/data/cases.json

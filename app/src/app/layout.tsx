@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   description: 'Send a consultation form, meet a dermatologist or aesthetician, and buy prescribed products on the platform.',
   manifest: '/manifest.webmanifest',
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'AceTouch' },
+  icons: {
+    icon: '/icons/icon-192.png',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export const viewport: Viewport = {

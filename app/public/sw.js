@@ -1,6 +1,6 @@
 /* Flawless AceTouch service worker — offline-first shell, network for API. */
-const CACHE = 'fat-v1';
-const CORE = ['/', '/manifest.webmanifest'];
+const CACHE = 'fat-v2';
+const CORE = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

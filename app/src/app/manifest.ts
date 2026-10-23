@@ -1,0 +1,22 @@
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'Flawless AceTouch',
+    short_name: 'AceTouch',
+    description: 'Expert skincare consultations, shop, and lessons. Install for a studio-style home-screen app.',
+    start_url: '/',
+    scope: '/',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: '#F6F1EA',
+    theme_color: '#1F6B5C',
+    lang: 'en',
+    categories: ['health', 'lifestyle', 'shopping'],
+    icons: [
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    ],
+  };
+}

@@ -10,4 +10,16 @@
 # API routes run as Netlify Functions via the Next.js plugin.
 # Required env vars (set in Netlify dashboard > Site settings > Environment variables):
 #   RESEND_API_KEY, GROQ_API_KEY
-# Optional: GROQ_MODEL, PAYSTACK_SECRET_KEY
+# Optional: GROQ_MODEL, PAYSTACK_SECRET_KEY, PERFECT_CORP_API_KEY, PERFECT_CORP_SECRET_KEY, DATABASE_URL, SPECIALIST_INBOX, PAYSTACK_SECRET_KEY
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "no-cache"

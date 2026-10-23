@@ -27,3 +27,12 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// extract*Annotations can hang indefinitely on this Windows JDK/AGP combo.
+subprojects { sub ->
+    sub.tasks.configureEach { t ->
+        if (t.name == 'extractReleaseAnnotations' || t.name == 'extractDebugAnnotations') {
+            t.enabled = false
+        }
+    }
+}
