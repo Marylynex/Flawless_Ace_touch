@@ -20,6 +20,7 @@ Thumbs.db
 
 # Android build outputs (keep the native shell, skip binaries/caches)
 *.apk
+!app/public/downloads/*.apk
 app/android/.gradle/
 app/android/app/build/
 app/android/build/
