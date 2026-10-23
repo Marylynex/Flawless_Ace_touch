@@ -1,0 +1,26 @@
+[
+  {
+    "id": "vid-sunscreen-why",
+    "title": "Why do we have to wear sunscreen?",
+    "source": "TED-Ed · Kevin P. Boyd",
+    "minutes": 5,
+    "topic": "Sun protection",
+    "youtubeId": "ZSJITdsTze0"
+  },
+  {
+    "id": "vid-sunscreen-choose",
+    "title": "Which sunscreen should you choose?",
+    "source": "TED-Ed · Mary Poffenroth",
+    "minutes": 5,
+    "topic": "SPF and filters",
+    "youtubeId": "JX8rv_natkw"
+  },
+  {
+    "id": "vid-acne-spf",
+    "title": "Sunscreen for acne-prone skin",
+    "source": "Educational clinic lesson",
+    "minutes": 8,
+    "topic": "Acne",
+    "youtubeId": "L10cWLywXwY"
+  }
+]

@@ -1,8 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { initPayment, verifyPayment } from '../services/mockApi';
 import { formatNgn } from '../data/products';
+import {
+  clearPayQuery,
+  clearPendingPay,
+  paystackReturnReference,
+  readLastPay,
+  readPendingPay,
+  saveLastPay,
+  savePendingPay,
+} from '../services/paySession';
 
 const FEE_NGN = 5000;
 
@@ -14,6 +23,7 @@ export default function PaymentCard({
   title = 'Consultation fee',
   description = 'Covers expert review of your form (mock payment — no real charge).',
   successNote,
+  returnTab = 'consult',
 }: {
   email: string;
   referenceId: string;
@@ -22,21 +32,63 @@ export default function PaymentCard({
   title?: string;
   description?: string;
   successNote?: string;
+  returnTab?: 'consult' | 'shop' | 'learn';
 }) {
   const [state, setState] = useState<'idle' | 'ready' | 'verifying' | 'paid' | 'error'>('idle');
   const [payRef, setPayRef] = useState('');
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
+  const onPaidRef = useRef(onPaid);
+  onPaidRef.current = onPaid;
+
+  useEffect(() => {
+    const last = readLastPay();
+    if (last && last.referenceId === referenceId) {
+      setPayRef(last.payRef);
+      setState('paid');
+      return;
+    }
+
+    const returned = paystackReturnReference();
+    const pending = readPendingPay();
+    if (!returned || !pending || pending.referenceId !== referenceId) return;
+
+    let cancelled = false;
+    setPayRef(returned);
+    setState('verifying');
+    verifyPayment(returned)
+      .then((v) => {
+        if (cancelled) return;
+        if (v.paid) {
+          saveLastPay({ ...pending, payRef: returned });
+          clearPendingPay();
+          clearPayQuery();
+          onPaidRef.current?.(referenceId, returned);
+          setState('paid');
+        } else {
+          setState('error');
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setState('error');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [referenceId]);
 
   async function start() {
     setBusy(true);
     try {
-      const init = await initPayment(email, amountNgn);
+      const callbackUrl = `${window.location.origin}/?pay=return`;
+      const init = await initPayment(email, amountNgn, callbackUrl);
       setPayRef(init.reference);
-      setNote(init.mock ? (init.note || 'Mock checkout — no real charge.') : 'Redirect to Paystack to complete payment.');
+      savePendingPay({ tab: returnTab, referenceId, payRef: init.reference });
+      setNote(init.mock ? (init.note || 'Mock checkout — no real charge.') : 'Taking you to Paystack. You will return here automatically after payment.');
       setState('ready');
       if (!init.mock && init.authorization_url && init.authorization_url !== '#mock-paystack-checkout') {
-        window.open(init.authorization_url, '_blank', 'noopener');
+        window.location.assign(init.authorization_url);
+        return;
       }
     } catch {
       setState('error');
@@ -50,6 +102,8 @@ export default function PaymentCard({
     try {
       const v = await verifyPayment(payRef);
       if (v.paid) {
+        saveLastPay({ tab: returnTab, referenceId, payRef });
+        clearPendingPay();
         if (onPaid) onPaid(referenceId, payRef);
         setState('paid');
       } else {
@@ -86,9 +140,9 @@ export default function PaymentCard({
           </button>
         </>
       )}
-      {state === 'verifying' && <p className="muted">Verifying payment...</p>}
+      {state === 'verifying' && <p className="muted">Confirming Paystack payment and bringing you back...</p>}
       {state === 'error' && (
-        <p className="err">Payment could not be completed. Try again in a moment.</p>
+        <p className="err">Payment could not be completed. If you paid, wait a moment and refresh — we will verify the return automatically.</p>
       )}
     </div>
   );

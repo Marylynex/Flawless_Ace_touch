@@ -49,14 +49,14 @@ export default function SkinSearch({ onShop }: { onShop?: () => void }) {
     <section className="card">
       <div className="section-head">
         <div>
-          <h2>AI skin-care search</h2>
-          <p className="muted">Ask about a concern, or add a selfie for Perfect Corp skin analysis. Results point to products you can buy here.</p>
+          <h2>Ask Perfect Corp</h2>
+          <p className="muted">Ask a skincare question. Add a selfie if you want Perfect Corp to analyse the skin and answer from that scan.</p>
         </div>
       </div>
 
       <form onSubmit={(e) => submit(e)}>
         <div className="field">
-          <label htmlFor="skin-q">What are you looking for?</label>
+          <label htmlFor="skin-q">Your question</label>
           <input
             id="skin-q"
             type="text"
@@ -80,7 +80,7 @@ export default function SkinSearch({ onShop }: { onShop?: () => void }) {
         </div>
         {error && <div className="err">{error}</div>}
         <button className="btn btn-primary" type="submit" disabled={busy}>
-          {busy ? 'Searching with Perfect Corp...' : 'Search skin care'}
+          {busy ? 'Asking Perfect Corp...' : 'Get an answer'}
         </button>
       </form>
 
@@ -94,6 +94,12 @@ export default function SkinSearch({ onShop }: { onShop?: () => void }) {
 
       {result && (
         <div className="search-results">
+          {result.answer && (
+            <div className="tip">
+              <strong>Answer</strong>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{result.answer}</p>
+            </div>
+          )}
           {result.analyzed && (
             <>
               <h3>Perfect Corp analysis</h3>

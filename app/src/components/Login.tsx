@@ -25,10 +25,15 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
   }
 
   function fill(email: string, password: string) {
-    setMode('login');
-    setEmail(email);
-    setPassword(password);
     setError('');
+    try {
+      onLogin(login(email, password));
+    } catch (err) {
+      setMode('login');
+      setEmail(email);
+      setPassword(password);
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
+    }
   }
 
   function switchMode(m: 'login' | 'signup') {
@@ -68,11 +73,9 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
     <>
       <section className="hero">
         <span className="eyebrow">Flawless AceTouch</span>
-        <h1>{mode === 'signup' ? 'Skin care, guided by real experts.' : 'Welcome back to your routine.'}</h1>
+        <h1>Skincare, guided by real experts.</h1>
         <p className="subtitle">
-          {mode === 'signup'
-            ? 'Create an account to send a consultation form, learn, and buy prescribed products on the platform.'
-            : 'Log in to continue a form, shop prescribed care, or manage the studio.'}
+          Trust us to give you a flawless skin, top quality skincare products &amp; a vast knowledge on skincare.
         </p>
       </section>
       <section className="card auth-card">
@@ -97,7 +100,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
           </div>
           <div className="field">
             <label htmlFor="auth-password">Password</label>
-            <input id="auth-password" type="password" placeholder={mode === 'signup' ? 'At least 6 characters' : 'Your password'} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input id="auth-password" type="password" placeholder={mode === 'signup' ? 'At least 4 characters' : 'Your password'} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           {error && <div className="field"><div className="err">{error}</div></div>}
           <button className="btn btn-primary" type="submit">

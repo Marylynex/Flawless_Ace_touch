@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import PaymentCard from './PaymentCard';
 import { PRODUCTS, formatNgn, type Product } from '../data/products';
 import { addToCart, cartCount, cartProducts, cartTotal, clearCart, getCart, setQty, type CartLine } from '../services/cart';
+import { readLastPay, readPendingPay } from '../services/paySession';
 
 export default function Shop({
   email,
@@ -19,7 +20,15 @@ export default function Shop({
   const [lines, setLines] = useState<CartLine[]>([]);
   const [filter, setFilter] = useState<string>('all');
   const [flash, setFlash] = useState<string | null>(null);
-  const [checkoutKey, setCheckoutKey] = useState(0);
+  const [orderId] = useState(() => {
+    const pending = readPendingPay();
+    if (pending?.tab === 'shop') return pending.referenceId;
+    const last = readLastPay();
+    if (last?.tab === 'shop') return last.referenceId;
+    return 'SHOP-' + Date.now().toString(36).toUpperCase();
+  });
+  const [orderPaid, setOrderPaid] = useState(() => readLastPay()?.tab === 'shop');
+  const [paidAmount, setPaidAmount] = useState(0);
 
   useEffect(() => {
     setLines(getCart());
@@ -45,7 +54,6 @@ export default function Shop({
 
   function changeQty(id: string, qty: number) {
     setLines(setQty(id, qty));
-    setCheckoutKey((k) => k + 1);
   }
 
   return (
@@ -97,39 +105,48 @@ export default function Shop({
 
       <div className="cart-panel">
         <h3>Your bag</h3>
-        {items.length === 0 ? (
+        {items.length === 0 && !orderPaid ? (
           <p className="muted">Your bag is empty. Add a prescribed product to check out here.</p>
         ) : (
           <>
-            <ul className="cart-lines">
-              {items.map(({ product, qty }) => (
-                <li key={product.id}>
-                  <div>
-                    <strong>{product.name}</strong>
-                    <span className="muted">{formatNgn(product.priceNgn)} each</span>
-                  </div>
-                  <div className="qty">
-                    <button type="button" onClick={() => changeQty(product.id, qty - 1)} aria-label="Decrease">−</button>
-                    <span>{qty}</span>
-                    <button type="button" onClick={() => changeQty(product.id, qty + 1)} aria-label="Increase">+</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <p className="cart-total"><span>Total</span><strong>{formatNgn(total)}</strong></p>
-            <PaymentCard
-              key={checkoutKey + '-' + total}
-              email={email}
-              referenceId={`SHOP-${Date.now().toString(36).toUpperCase()}`}
-              amountNgn={total}
-              title="Product order"
-              description="Pay for prescribed and shop items on Flawless AceTouch (mock checkout — no real charge)."
-              successNote="Order placed. We will pack your products (mock). A confirmation stays on this page."
-              onPaid={() => {
-                clearCart();
-                setLines([]);
-              }}
-            />
+            {items.length > 0 && (
+              <>
+                <ul className="cart-lines">
+                  {items.map(({ product, qty }) => (
+                    <li key={product.id}>
+                      <div>
+                        <strong>{product.name}</strong>
+                        <span className="muted">{formatNgn(product.priceNgn)} each</span>
+                      </div>
+                      <div className="qty">
+                        <button type="button" onClick={() => changeQty(product.id, qty - 1)} aria-label="Decrease">−</button>
+                        <span>{qty}</span>
+                        <button type="button" onClick={() => changeQty(product.id, qty + 1)} aria-label="Increase">+</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p className="cart-total"><span>Total</span><strong>{formatNgn(total)}</strong></p>
+              </>
+            )}
+            {(items.length > 0 || orderPaid) && (
+              <PaymentCard
+                key={orderId}
+                email={email}
+                referenceId={orderId}
+                returnTab="shop"
+                amountNgn={total || paidAmount}
+                title="Product order"
+                description="Pay for prescribed and shop items on Flawless AceTouch. Paystack will send you back here automatically."
+                successNote="Order placed. We will pack your products (mock). A confirmation stays on this page."
+                onPaid={() => {
+                  setPaidAmount(total);
+                  clearCart();
+                  setLines([]);
+                  setOrderPaid(true);
+                }}
+              />
+            )}
           </>
         )}
       </div>

@@ -34,7 +34,7 @@ export function register(name: string, email: string, password: string): User {
   const cleanEmail = email.trim().toLowerCase();
   if (!cleanName) throw new Error('Please enter your name.');
   if (!/.+@.+\..+/.test(cleanEmail)) throw new Error('Please enter a valid email address.');
-  if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+  if (password.length < 4) throw new Error('Password must be at least 4 characters.');
   const taken =
     USERS.some((u) => u.email.toLowerCase() === cleanEmail) ||
     readCustomers().some((u) => u.email.toLowerCase() === cleanEmail);

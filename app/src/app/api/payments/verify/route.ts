@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'reference-required' }, { status: 400 });
   }
   const secret = process.env.PAYSTACK_SECRET_KEY;
-  if (secret && !String(reference).startsWith('FAT-')) {
+  if (secret) {
     try {
       const r = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {
         headers: { Authorization: `Bearer ${secret}` },

@@ -102,6 +102,7 @@ export interface SkinSearchResult {
   query: string;
   analyzed: boolean;
   analysisNote: string;
+  answer: string;
   scores: { type: string; uiScore: number }[];
   concerns: string[];
   products: {
@@ -158,11 +159,15 @@ export interface PaymentInit {
   note?: string;
 }
 
-export async function initPayment(email: string, amountNgn: number): Promise<PaymentInit> {
+export async function initPayment(email: string, amountNgn: number, callbackUrl?: string): Promise<PaymentInit> {
   const res = await fetch(`${API}/api/payments/initialize`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, amountNgn }),
+    body: JSON.stringify({
+      email,
+      amountNgn,
+      callbackUrl: callbackUrl || (typeof window !== 'undefined' ? `${window.location.origin}/?pay=return` : undefined),
+    }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error('Could not start the payment. Check the email server is running.');

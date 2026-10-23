@@ -1,22 +1,22 @@
 'use client';
 
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { submitRequest, sendConfirmation, patchServerCase, type EmailStatus, type MatchResult } from './services/mockApi';
 import mockExperts from './data/mockExperts.json';
 import skinTips from './data/skinTips.json';
 import LearnLibrary from './components/LearnLibrary';
-import ResearchChat from './components/ResearchChat';
 import SkinSearch from './components/SkinSearch';
+import LearnVideos from './components/LearnVideos';
 import PaymentCard from './components/PaymentCard';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
-import MyForms from './components/MyForms';
 import Shop from './components/Shop';
 import { getSession, logout, type User } from './services/auth';
 import { recordRequest, markPaid } from './services/store';
+import { clearConsultSnapshot, paystackReturnReference, readConsultSnapshot, readPendingPay, saveConsultSnapshot } from './services/paySession';
 import { productsForConcern } from './data/products';
 
-type Tab = 'home' | 'consult' | 'shop' | 'learn' | 'search' | 'forms';
+type Tab = 'home' | 'consult' | 'shop' | 'learn';
 
 const CONCERNS = [
   { value: 'acne', label: 'Acne / breakouts' },
@@ -38,7 +38,8 @@ const STEPS = [
 ];
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(() => getSession());
+  const [user, setUser] = useState<User | null>(null);
+  const [sessionReady, setSessionReady] = useState(false);
   const [tab, setTab] = useState<Tab>('home');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -95,6 +96,13 @@ export default function App() {
         preferredTime,
       });
       setResult(res);
+      saveConsultSnapshot({
+        result: res,
+        name: name.trim(),
+        email: email.trim(),
+        concern,
+        preferredTime,
+      });
       recordRequest({
         referenceId: res.referenceId,
         name: name.trim(),
@@ -118,6 +126,7 @@ export default function App() {
   }
 
   function reset() {
+    clearConsultSnapshot();
     setResult(null);
     setEmailStatus(null);
     setName('');
@@ -131,6 +140,26 @@ export default function App() {
   }
 
   const firstName = name.split(' ')[0] || 'there';
+
+  useEffect(() => {
+    setUser(getSession());
+    setSessionReady(true);
+  }, []);
+
+  useEffect(() => {
+    const snap = readConsultSnapshot();
+    if (snap) {
+      setResult(snap.result);
+      setName(snap.name);
+      setEmail(snap.email);
+      setConcern(snap.concern);
+      setPreferredTime(snap.preferredTime);
+    }
+    const pending = readPendingPay();
+    const returning = Boolean(paystackReturnReference());
+    if (returning && pending?.tab) setTab(pending.tab as Tab);
+    else if (snap) setTab('consult');
+  }, []);
 
   function handleLogout() {
     logout();
@@ -148,6 +177,10 @@ export default function App() {
     specialties: string[];
   }[];
 
+  if (!sessionReady) {
+    return <div className="shell" />;
+  }
+
   if (!user) {
     return (
       <div className="shell">
@@ -163,11 +196,9 @@ export default function App() {
     ? []
     : [
         { id: 'home', label: 'Home' },
-        { id: 'search', label: 'AI Search' },
         { id: 'consult', label: 'Consult' },
         { id: 'shop', label: 'Shop' },
         { id: 'learn', label: 'Learn' },
-        { id: 'forms', label: 'My forms' },
       ];
 
   return (
@@ -215,18 +246,10 @@ export default function App() {
             <>
               <section className="hero">
                 <span className="eyebrow">Know your skin · love your routine</span>
-                <h1>Expert skin care that feels like a studio visit.</h1>
+                <h1>Expert skincare that feels like a studio visit.</h1>
                 <p className="subtitle">
-                  Send a short form, get matched to a dermatologist or aesthetician, then buy the products they prescribe — all in one place.
+                  Start your skin-care journey with us, buy products and learn more about skincare.
                 </p>
-                <div className="hero-actions">
-                  <button className="btn btn-primary" type="button" onClick={() => setTab('search')}>
-                    Try AI skin-care search
-                  </button>
-                  <button className="btn btn-ghost" type="button" onClick={() => setTab('consult')}>
-                    Start a consultation form
-                  </button>
-                </div>
                 <div className="stats">
                   <div><strong>1 + 3</strong><span>dermatologist &amp; aestheticians</span></div>
                   <div><strong>24h</strong><span>typical response</span></div>
@@ -377,6 +400,7 @@ export default function App() {
                   <PaymentCard
                     email={email}
                     referenceId={result.referenceId}
+                    returnTab="consult"
                     onPaid={(ref, payRef) => {
                       markPaid(ref, payRef);
                       patchServerCase(ref, { paid: true, payRef }).catch(() => {});
@@ -413,27 +437,11 @@ export default function App() {
             />
           )}
 
-          {tab === 'search' && (
-            <SkinSearch onShop={() => setTab('shop')} />
-          )}
-
           {tab === 'learn' && (
             <>
+              <SkinSearch onShop={() => setTab('shop')} />
+              <LearnVideos email={user.email} />
               <LearnLibrary />
-              <ResearchChat />
-            </>
-          )}
-
-          {tab === 'forms' && (
-            <>
-              <MyForms email={user.email} />
-              <section className="card">
-                <h2>Need a new form?</h2>
-                <p className="muted">Start a consultation whenever a new concern shows up.</p>
-                <button className="btn btn-primary" type="button" onClick={() => { reset(); setTab('consult'); }}>
-                  Open consultation form
-                </button>
-              </section>
             </>
           )}
 
