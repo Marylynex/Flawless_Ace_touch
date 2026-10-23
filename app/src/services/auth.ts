@@ -6,7 +6,7 @@ export interface User {
 
 // Mock directory — demo credentials only. No real authentication in this prototype.
 const USERS: (User & { password: string })[] = [
-  { email: 'customer@demo.local', password: 'customer123', name: 'Demo Customer', role: 'customer' },
+  { email: 'paulmarylyn21@gmail.com', password: 'customer123', name: 'Demo Customer', role: 'customer' },
   { email: 'admin@demo.local', password: 'admin123', name: 'Demo Admin', role: 'admin' },
 ];
 

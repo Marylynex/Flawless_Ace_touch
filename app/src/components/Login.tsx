@@ -110,7 +110,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
         <div className="demo-accounts">
           <p className="muted">Skip the forms with a one-tap demo account:</p>
           <div className="btn-row">
-            <button className="btn btn-secondary" type="button" onClick={() => fill('customer@demo.local', 'customer123')}>
+            <button className="btn btn-secondary" type="button" onClick={() => fill('paulmarylyn21@gmail.com', 'customer123')}>
               Use customer account
             </button>
             <button className="btn btn-secondary" type="button" onClick={() => fill('admin@demo.local', 'admin123')}>
