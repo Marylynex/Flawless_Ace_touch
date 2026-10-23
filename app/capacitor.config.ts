@@ -11,6 +11,13 @@ const config: CapacitorConfig = {
     url: 'https://flawlessace.netlify.app',
     cleartext: false,
     androidScheme: 'https',
+    allowNavigation: [
+      'flawlessace.netlify.app',
+      '*.netlify.app',
+      '*.paystack.com',
+      '*.paystack.co',
+      'checkout.paystack.com',
+    ],
   },
 };
 

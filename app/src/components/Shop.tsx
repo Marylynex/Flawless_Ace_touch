@@ -105,7 +105,7 @@ export default function Shop({
 
       <div className="cart-panel">
         <h3>Your bag</h3>
-        {items.length === 0 && !orderPaid ? (
+        {items.length === 0 && !orderPaid && readPendingPay()?.tab !== 'shop' ? (
           <p className="muted">Your bag is empty. Add a prescribed product to check out here.</p>
         ) : (
           <>

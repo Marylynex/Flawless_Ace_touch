@@ -51,7 +51,14 @@ export default function PaymentCard({
 
     const returned = paystackReturnReference();
     const pending = readPendingPay();
-    if (!returned || !pending || pending.referenceId !== referenceId) return;
+    const matchesCard = pending && (pending.referenceId === referenceId || pending.payRef === returned);
+    if (pending && pending.referenceId === referenceId && !returned) {
+      setPayRef(pending.payRef);
+      setState('ready');
+      setNote('If Paystack already charged you, confirm below to finish and stay on this page.');
+      return;
+    }
+    if (!returned || !matchesCard) return;
 
     let cancelled = false;
     setPayRef(returned);
@@ -136,7 +143,7 @@ export default function PaymentCard({
         <>
           <p className="muted">Checkout reference: {payRef}. {note}</p>
           <button className="btn btn-primary" type="button" onClick={confirmPaid}>
-            I have completed payment (mock)
+            I have completed payment — return to Flawless AceTouch
           </button>
         </>
       )}

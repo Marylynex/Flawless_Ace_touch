@@ -1,19 +1,35 @@
 import { NextResponse } from 'next/server';
 import { rateLimited, clientIp } from '@/lib/safety';
 
+const SITE = 'https://flawlessace.netlify.app';
+
+function hostAllowed(hostname: string): boolean {
+  return (
+    hostname === 'flawlessace.netlify.app' ||
+    hostname.endsWith('.netlify.app') ||
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1'
+  );
+}
+
 function callbackUrl(req: Request, candidate?: string): string {
-  const originHeader = req.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  let origin = originHeader.replace(/\/$/, '');
-  try {
-    if (candidate) {
-      const wanted = new URL(candidate);
-      const allowed = new URL(origin);
-      if (wanted.origin === allowed.origin) origin = wanted.origin;
+  const forwardedHost = (req.headers.get('x-forwarded-host') || req.headers.get('host') || '').split(',')[0].trim();
+  const proto = (req.headers.get('x-forwarded-proto') || 'https').split(',')[0].trim();
+  const headerOrigin = req.headers.get('origin') || '';
+
+  const candidates = [candidate, headerOrigin, forwardedHost ? `${proto}://${forwardedHost}` : '', SITE];
+  for (const raw of candidates) {
+    if (!raw) continue;
+    try {
+      const url = new URL(raw);
+      if (hostAllowed(url.hostname)) {
+        return `${url.origin}/?pay=return`;
+      }
+    } catch {
+      // try next candidate
     }
-  } catch {
-    // keep origin from headers
   }
-  return `${origin}/?pay=return`;
+  return `${SITE}/?pay=return`;
 }
 
 export async function POST(req: Request) {

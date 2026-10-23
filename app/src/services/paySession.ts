@@ -7,40 +7,48 @@ export interface PendingPay {
 const PENDING = 'fat_pending_pay';
 const LAST = 'fat_last_pay';
 
+function readStore(key: string): PendingPay | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as PendingPay;
+    if (!p?.payRef || !p?.referenceId) return null;
+    return p;
+  } catch {
+    return null;
+  }
+}
+
+function writeStore(key: string, p: PendingPay): void {
+  const raw = JSON.stringify(p);
+  localStorage.setItem(key, raw);
+  sessionStorage.setItem(key, raw);
+}
+
+function clearStore(key: string): void {
+  localStorage.removeItem(key);
+  sessionStorage.removeItem(key);
+}
+
 export function savePendingPay(p: PendingPay): void {
-  sessionStorage.setItem(PENDING, JSON.stringify(p));
+  writeStore(PENDING, p);
 }
 
 export function readPendingPay(): PendingPay | null {
-  try {
-    const raw = sessionStorage.getItem(PENDING);
-    if (!raw) return null;
-    const p = JSON.parse(raw) as PendingPay;
-    if (!p?.payRef || !p?.referenceId) return null;
-    return p;
-  } catch {
-    return null;
-  }
+  return readStore(PENDING);
 }
 
 export function clearPendingPay(): void {
-  sessionStorage.removeItem(PENDING);
+  clearStore(PENDING);
 }
 
 export function saveLastPay(p: PendingPay): void {
-  sessionStorage.setItem(LAST, JSON.stringify(p));
+  writeStore(LAST, p);
 }
 
 export function readLastPay(): PendingPay | null {
-  try {
-    const raw = sessionStorage.getItem(LAST);
-    if (!raw) return null;
-    const p = JSON.parse(raw) as PendingPay;
-    if (!p?.payRef || !p?.referenceId) return null;
-    return p;
-  } catch {
-    return null;
-  }
+  return readStore(LAST);
 }
 
 export function paystackReturnReference(): string | null {

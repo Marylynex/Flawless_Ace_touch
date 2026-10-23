@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import { submitRequest, sendConfirmation, patchServerCase, type EmailStatus, type MatchResult } from './services/mockApi';
+import { submitRequest, sendConfirmation, patchServerCase, verifyPayment, type EmailStatus, type MatchResult } from './services/mockApi';
 import mockExperts from './data/mockExperts.json';
 import skinTips from './data/skinTips.json';
 import LearnLibrary from './components/LearnLibrary';
@@ -13,7 +13,7 @@ import AdminDashboard from './components/AdminDashboard';
 import Shop from './components/Shop';
 import { getSession, logout, type User } from './services/auth';
 import { recordRequest, markPaid } from './services/store';
-import { clearConsultSnapshot, paystackReturnReference, readConsultSnapshot, readPendingPay, saveConsultSnapshot } from './services/paySession';
+import { clearConsultSnapshot, clearPayQuery, clearPendingPay, paystackReturnReference, readConsultSnapshot, readPendingPay, saveConsultSnapshot, saveLastPay } from './services/paySession';
 import { productsForConcern } from './data/products';
 
 type Tab = 'home' | 'consult' | 'shop' | 'learn';
@@ -160,6 +160,30 @@ export default function App() {
     if (returning && pending?.tab) setTab(pending.tab as Tab);
     else if (snap) setTab('consult');
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    const returned = paystackReturnReference();
+    if (!returned) return;
+    const pending = readPendingPay();
+    if (pending?.tab) setTab(pending.tab as Tab);
+    let cancelled = false;
+    verifyPayment(returned)
+      .then((v) => {
+        if (cancelled || !v.paid || !pending) return;
+        saveLastPay({ ...pending, payRef: returned });
+        if (pending.tab === 'consult') {
+          markPaid(pending.referenceId, returned);
+          patchServerCase(pending.referenceId, { paid: true, payRef: returned }).catch(() => {});
+        }
+        clearPendingPay();
+        clearPayQuery();
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   function handleLogout() {
     logout();
