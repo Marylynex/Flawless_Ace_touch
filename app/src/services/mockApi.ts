@@ -170,7 +170,10 @@ export async function initPayment(email: string, amountNgn: number, callbackUrl?
     }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error('Could not start the payment. Check the email server is running.');
+  if (!res.ok) {
+    const detail = typeof data.detail === 'string' ? data.detail : '';
+    throw new Error(detail || 'Could not start the payment. Try again, or use a normal email address.');
+  }
   return data as PaymentInit;
 }
 

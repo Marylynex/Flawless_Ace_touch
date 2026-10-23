@@ -41,7 +41,12 @@ export default function LearnVideos({ email }: { email: string }) {
   const current = videos.find((v) => v.id === active) ?? videos[0];
 
   useEffect(() => {
-    if (isUnlocked(email) || readLastPay()?.tab === 'learn') setOpen(true);
+    function sync() {
+      if (isUnlocked(email) || readLastPay()?.tab === 'learn') setOpen(true);
+    }
+    sync();
+    window.addEventListener('fat-pay-updated', sync);
+    return () => window.removeEventListener('fat-pay-updated', sync);
   }, [email]);
 
   return (

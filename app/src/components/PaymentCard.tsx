@@ -97,7 +97,8 @@ export default function PaymentCard({
         window.location.assign(init.authorization_url);
         return;
       }
-    } catch {
+    } catch (err) {
+      setNote(err instanceof Error ? err.message : 'Payment could not start.');
       setState('error');
     } finally {
       setBusy(false);
@@ -149,7 +150,7 @@ export default function PaymentCard({
       )}
       {state === 'verifying' && <p className="muted">Confirming Paystack payment and bringing you back...</p>}
       {state === 'error' && (
-        <p className="err">Payment could not be completed. If you paid, wait a moment and refresh — we will verify the return automatically.</p>
+        <p className="err">{note || 'Payment could not be completed. If you paid, wait a moment and refresh — we will verify the return automatically.'}</p>
       )}
     </div>
   );

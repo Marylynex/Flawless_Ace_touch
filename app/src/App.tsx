@@ -176,7 +176,6 @@ export default function App() {
           markPaid(pending.referenceId, returned);
           patchServerCase(pending.referenceId, { paid: true, payRef: returned }).catch(() => {});
         }
-        clearPendingPay();
         clearPayQuery();
       })
       .catch(() => {});

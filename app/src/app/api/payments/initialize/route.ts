@@ -3,6 +3,15 @@ import { rateLimited, clientIp } from '@/lib/safety';
 
 const SITE = 'https://flawlessace.netlify.app';
 
+function checkoutEmail(email: string): string {
+  const trimmed = email.trim().toLowerCase();
+  const host = trimmed.split('@')[1] || '';
+  const fakeHost = !host || /\.(local|lan|internal|test|invalid)$/i.test(host);
+  if (!fakeHost && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(trimmed)) return trimmed;
+  const local = (trimmed.split('@')[0] || 'guest').replace(/[^a-z0-9]/gi, '').slice(0, 24) || 'guest';
+  return `${local}.acetouch@gmail.com`;
+}
+
 function hostAllowed(hostname: string): boolean {
   return (
     hostname === 'flawlessace.netlify.app' ||
@@ -55,11 +64,12 @@ export async function POST(req: Request) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${secret}` },
         body: JSON.stringify({
-          email,
+          email: checkoutEmail(email),
           amount: Math.round(Number(amountNgn) * 100),
           reference,
           currency: 'NGN',
           callback_url,
+          metadata: { fat_email: email, fat_site: SITE },
         }),
       });
       const data = (await r.json()) as { status?: boolean; message?: string; data?: { authorization_url?: string; reference?: string } };

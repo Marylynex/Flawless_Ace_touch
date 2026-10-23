@@ -24,6 +24,7 @@ function writeStore(key: string, p: PendingPay): void {
   const raw = JSON.stringify(p);
   localStorage.setItem(key, raw);
   sessionStorage.setItem(key, raw);
+  window.dispatchEvent(new Event('fat-pay-updated'));
 }
 
 function clearStore(key: string): void {

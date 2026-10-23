@@ -32,6 +32,11 @@ export default function Shop({
 
   useEffect(() => {
     setLines(getCart());
+    function sync() {
+      if (readLastPay()?.tab === 'shop') setOrderPaid(true);
+    }
+    window.addEventListener('fat-pay-updated', sync);
+    return () => window.removeEventListener('fat-pay-updated', sync);
   }, []);
 
   const concerns = useMemo(() => {
